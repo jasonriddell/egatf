@@ -1,7 +1,7 @@
 # EGATF Terminology
 
 **Document type:** Working glossary  
-**Status:** Draft v0.2  
+**Status:** Draft v0.3  
 **Repository path:** `framework/terminology.md`
 
 ---
@@ -72,23 +72,22 @@ Raw source material is not yet information. It must be prepared, extracted, and 
 
 ### Evidence Preparation
 
-The process of extracting, filtering, parsing, normalizing, indexing, and correlating raw source material without adding unsupported diagnosis.
+The process of making raw source material easier to inspect, query, compare, and reason about while preserving provenance.
 
-Examples:
+Evidence Preparation includes:
 
-- Extract all restart events
-- Extract all ERROR and FATAL log lines
-- Parse version and build information
-- Extract configuration values
-- Build node inventory
-- Normalize timestamps
-- Group repeated stack traces
-- Identify gaps in logs or metrics
-- Compare events across nodes
+- Collection
+- Transformation
+- Parsing
+- Normalization
+- Indexing
+- Extraction
+- Derivation
+- Correlation
 
-Evidence preparation answers:
+Evidence Preparation answers:
 
-> How do we turn raw source material into usable extracted evidence?
+> How do we turn raw source material into a usable evidence base?
 
 Rule:
 
@@ -96,9 +95,50 @@ Rule:
 
 ---
 
+### Prepared Evidence Base
+
+The body of prepared material available for analysis after evidence preparation.
+
+A Prepared Evidence Base may contain:
+
+- Structured Source Material
+- Parsed Source Material
+- Normalized Source Material
+- Indexed Source Material
+- Extracted Evidence
+- Derived Evidence
+- Correlated Evidence
+
+Prepared Evidence Base answers:
+
+> What prepared material is available for analysis and reasoning?
+
+---
+
+### Structured Source Material
+
+Raw source material that has been transformed into a more queryable or structured format without deciding what matters.
+
+Examples:
+
+- Logs converted to parquet
+- Text reports converted to SQLite tables
+- JSON converted to relational tables
+- Log lines split into columns
+
+Structured Source Material answers:
+
+> What does the raw material look like after structure has been added?
+
+A tool such as `wtl`, which converts tserver, master, and YBA logs into parquet files without consolidation or filtering, produces Structured Source Material.
+
+It should not be described as producing Extracted Evidence unless it also selects notable observations.
+
+---
+
 ### Extracted Evidence
 
-A clean observation produced from raw source material with provenance.
+A selected observation produced from raw or structured source material with provenance.
 
 Examples:
 
@@ -112,33 +152,76 @@ CPU usage on node-2 exceeded 95 percent for 11 minutes.
 Source: metrics.csv.
 ```
 
-```text
-The flag ysql_output_buffer_size was set to 262144.
-Source: gflags.json.
-```
+Extracted Evidence answers:
 
-Extracted evidence answers:
+> What notable observation was found in the material?
 
-> What verified observation can be traced back to source material?
+Extracted Evidence should include:
 
-Extracted evidence should include observation, source, timestamp or time range, component, extraction method, confidence in source reliability, and limitations.
+- Observation
+- Source
+- Timestamp or time range
+- Component
+- Extraction method
+- Confidence in source reliability
+- Limitations or missing context
+
+---
+
+### Derived Evidence
+
+A computed observation generated from raw source material, structured source material, or extracted evidence.
+
+Examples:
+
+- Tablet is leaderless
+- Table is under-replicated
+- Table is over-replicated
+- Node had 17 restarts
+- Error rate increased 400 percent
+- Leader movement followed disk latency increase
+
+Derived Evidence answers:
+
+> What computed observation follows from the available evidence?
+
+Derived Evidence must preserve the derivation logic and source inputs.
+
+---
+
+### Correlated Evidence
+
+Evidence produced by comparing observations across time, nodes, components, sources, or reports.
+
+Examples:
+
+- Memory pressure began 3 minutes before restart.
+- Leader changes increased after disk latency increased.
+- The reported error appears outside the customer-reported time window.
+- Node-2 shows the error, but node-1 and node-3 do not.
+
+Correlated Evidence answers:
+
+> What relationship exists between observations?
 
 ---
 
 ### Evidence
 
-Observable, reported, collected, or extracted material that can support or challenge a claim.
+Observable, reported, collected, structured, extracted, derived, or correlated material that can support or challenge a claim.
 
-In EGATF v0.2, Evidence includes:
+In EGATF v0.3, Evidence includes:
 
-- Reported context
-- Raw source material
-- Evidence preparation output
-- Extracted evidence
+- Reported Context
+- Raw Source Material
+- Structured Source Material
+- Extracted Evidence
+- Derived Evidence
+- Correlated Evidence
 
 Evidence answers:
 
-> What was observed, reported, collected, or extracted?
+> What was observed, reported, collected, structured, extracted, derived, or correlated?
 
 Evidence should be recorded with enough context that another person can review it independently.
 
@@ -226,7 +309,7 @@ Challenge questions include:
 - Does the source code support this interpretation?
 - Could the same symptoms be caused by something else?
 - Did guided analysis anchor the investigation too strongly?
-- Did cold analysis find anomalies that guided analysis missed?
+- Did evidence preparation hide, drop, or misclassify material?
 
 Challenge answers:
 
@@ -243,8 +326,6 @@ The current best human judgment after evidence, information, knowledge, insight,
 Wisdom answers:
 
 > What should we believe, given the evidence and uncertainty?
-
-Wisdom should include confidence level, remaining uncertainty, known assumptions, risk of being wrong, consequences of action, and whether more evidence is required.
 
 Status:
 
@@ -302,11 +383,368 @@ Learning closes the loop by turning one investigation into improved future diagn
 
 ---
 
+## Evidence Preparation Operations
+
+### Collection
+
+Gathering raw source material.
+
+Examples:
+
+- Collect support bundle
+- Collect logs
+- Export metrics
+- Capture configuration
+- Collect Kubernetes events
+
+Output:
+
+```text
+Raw Source Material
+```
+
+---
+
+### Transformation
+
+Changing the shape or storage format of source material without deciding what matters.
+
+Examples:
+
+- Convert logs to parquet
+- Convert JSON report to SQLite tables
+- Convert text report into structured rows
+- Split log lines into columns
+
+Output:
+
+```text
+Structured Source Material
+```
+
+Boundary rule:
+
+> Transformation changes shape. It does not select meaning.
+
+---
+
+### Parsing
+
+Reading a specific format and identifying fields.
+
+Examples:
+
+- Parse timestamp, severity, component, file, line, and message from logs.
+- Parse tablet ID, table ID, peer, role, and state from tablet reports.
+- Parse metric name, labels, timestamp, and value from metrics.
+
+Output:
+
+```text
+Parsed Source Material
+```
+
+Parsing may support transformation, extraction, or derivation.
+
+---
+
+### Normalization
+
+Making values consistent across sources.
+
+Examples:
+
+- Normalize timestamps to UTC
+- Normalize hostnames
+- Normalize node names
+- Normalize log severity
+- Normalize component names
+- Normalize units
+
+Output:
+
+```text
+Normalized Source Material
+```
+
+---
+
+### Indexing
+
+Making prepared material searchable or queryable.
+
+Examples:
+
+- Load logs into DuckDB
+- Create SQLite indexes
+- Build search indexes
+- Partition parquet files by time or component
+
+Output:
+
+```text
+Indexed Source Material
+```
+
+---
+
+### Extraction
+
+Selecting or identifying notable observations from raw or structured material.
+
+Examples:
+
+- Find restarts
+- Find FATAL log lines
+- Find failed backups
+- Find memory pressure events
+- Find leader changes
+
+Output:
+
+```text
+Extracted Evidence
+```
+
+Boundary rule:
+
+> Extraction selects observations.
+
+---
+
+### Derivation
+
+Computing higher-level observations from lower-level source material or evidence.
+
+Examples:
+
+- Tablet is leaderless
+- Table is under-replicated
+- Table is over-replicated
+- Node had 17 restarts
+- Error rate increased 400 percent
+
+Output:
+
+```text
+Derived Evidence
+```
+
+Boundary rule:
+
+> Derivation computes observations.
+
+---
+
+### Correlation
+
+Comparing observations across time, nodes, components, or sources.
+
+Examples:
+
+- Compare restart time against memory pressure
+- Compare leader changes against disk latency
+- Compare reported time window against log evidence
+- Compare error rates across nodes
+
+Output:
+
+```text
+Correlated Evidence
+```
+
+Boundary rule:
+
+> Correlation compares observations.
+
+---
+
+## Tooling Terms
+
+### Collector
+
+A script, command, or tool that gathers raw source material.
+
+---
+
+### Source Transformer
+
+A script, command, or tool that converts raw material into a more structured or queryable form without selecting meaning.
+
+Example:
+
+```text
+wtl
+```
+
+If `wtl` converts tserver, master, and YBA logs into parquet columns without consolidation or filtering, it is best described as:
+
+```text
+Source Transformer / Log Structuring Tool
+```
+
+It produces:
+
+```text
+Structured Source Material
+```
+
+not:
+
+```text
+Extracted Evidence
+```
+
+unless it also selects notable observations.
+
+---
+
+### Parser
+
+A script, command, or tool that reads a specific format and exposes fields.
+
+A parser may be used by a Source Transformer, Evidence Extractor, or Derived Evidence Generator.
+
+---
+
+### Normalizer
+
+A script, command, or tool that converts values into consistent forms.
+
+---
+
+### Indexer
+
+A script, command, or tool that makes material searchable or queryable.
+
+---
+
+### Evidence Extractor
+
+A script, command, or tool that extracts notable observations from raw or structured source material.
+
+Preferred use:
+
+- Restart extractor
+- Fatal error extractor
+- Failed backup extractor
+- Memory pressure event extractor
+
+---
+
+### Derived Evidence Generator
+
+A script, command, or tool that computes higher-level observations from source material or evidence.
+
+Example:
+
+A tablet report parser that identifies leaderless tablets, under-replicated tables, or over-replicated tables is performing derivation.
+
+If the same tool also converts the raw report into SQLite or parquet, it is a hybrid:
+
+```text
+Source Transformer + Derived Evidence Generator
+```
+
+---
+
+### Correlator
+
+A script, command, or tool that compares observations across time, nodes, components, or sources.
+
+---
+
+### Helper
+
+A script, command, or tool that assists later workflow tasks after investigation or during communication.
+
+Examples:
+
+- Generate engineering escalation
+- Draft customer update
+- Create case summary
+- Generate post-incident review outline
+- Format a bug report
+
+Rule:
+
+> Extractors and correlators prepare evidence. Helpers support communication, escalation, or follow-up.
+
+---
+
+## Boundary Rules
+
+### Transformation versus Extraction
+
+Transformation changes shape.
+
+Extraction selects observations.
+
+Example:
+
+```text
+wtl converts raw logs into parquet.
+```
+
+This is transformation.
+
+```text
+A query finds restart events in the parquet logs.
+```
+
+This is extraction.
+
+---
+
+### Extraction versus Derivation
+
+Extraction identifies an observation that exists in the material.
+
+Derivation computes a new observation from available material.
+
+Example:
+
+```text
+A tablet report contains peer role data.
+```
+
+Extracting peer role data is extraction.
+
+```text
+A tablet has no leader.
+```
+
+Computing this from peer role data is derivation.
+
+---
+
+### Derivation versus Information
+
+Derivation computes an observation.
+
+Information places observations into context.
+
+Example:
+
+```text
+Tablet X is leaderless.
+```
+
+This is derived evidence.
+
+```text
+Leaderless tablets appeared after tserver-2 restarted and were limited to tables in one placement.
+```
+
+This is information.
+
+---
+
 ## Analysis Modes
 
 ### Cold Analysis
 
-Analysis of raw source material without using reported context as the primary guide.
+Analysis of raw source material or prepared evidence without using reported context as the primary guide.
 
 Purpose:
 
@@ -346,114 +784,6 @@ Rule:
 
 The risk that an investigation becomes overly influenced by the initial problem description, customer statement, alert title, or first hypothesis.
 
-Example:
-
-A customer reports that an upgrade caused latency. AI then focuses only on upgrade-related evidence and misses a disk event that started earlier.
-
-Anchoring risk should be considered whenever guided analysis is used.
-
----
-
-## Tooling Terms
-
-### Collector
-
-A script, command, or tool that gathers raw source material.
-
-Examples:
-
-- Collect logs
-- Export metrics
-- Capture configuration
-- Collect Kubernetes events
-- Package support bundle data
-
-Collectors answer:
-
-> What raw material can we collect?
-
----
-
-### Evidence Extractor
-
-A script, command, or tool that extracts structured observations from raw source material while preserving provenance.
-
-Examples:
-
-- Extract restart events
-- Extract error messages
-- Extract gflags
-- Extract version information
-- Extract metric anomalies
-- Extract process lifecycle events
-
-Evidence Extractors answer:
-
-> What evidence can we extract from the raw material?
-
-Preferred generic name:
-
-> Evidence Extractor
-
-This is preferred over "helper" because the purpose is evidence preparation, not later workflow assistance.
-
----
-
-### Normalizer
-
-A script, command, or tool that converts raw or extracted data into consistent forms.
-
-Examples:
-
-- Normalize timestamps to UTC
-- Normalize hostnames
-- Normalize node names
-- Normalize log severity
-- Normalize component names
-
-Normalizers answer:
-
-> How do we make evidence comparable?
-
----
-
-### Correlator
-
-A script, command, or tool that compares extracted evidence across time, nodes, components, or sources.
-
-Examples:
-
-- Compare restart time against memory pressure
-- Compare leader changes against disk latency
-- Compare reported time window against log evidence
-- Compare error rates across nodes
-
-Correlators answer:
-
-> What relationships exist between extracted evidence items?
-
----
-
-### Helper
-
-A script, command, or tool that assists later workflow tasks after investigation or during communication.
-
-Examples:
-
-- Generate engineering escalation
-- Draft customer update
-- Create case summary
-- Generate post-incident review outline
-- Format a bug report
-
-Helpers answer:
-
-> How do we turn the investigation into a useful follow-up artefact?
-
-Rule:
-
-> Extractors and correlators prepare evidence. Helpers support communication, escalation, or follow-up.
-
 ---
 
 ## Supporting Terms
@@ -473,12 +803,16 @@ Challenged Insight
     ↓ derived from
 Knowledge + Information
     ↓ grounded in
-Extracted Evidence
-    ↓ prepared from
+Prepared Evidence Base
+    ↓ produced by
+Evidence Preparation
+    ↓ applied to
 Raw Source Material
     ↓ optionally guided by
 Reported Context
 ```
+
+---
 
 ### Source of Truth
 
@@ -495,37 +829,50 @@ Examples:
 
 A source of truth is context-dependent.
 
+---
+
 ### Unsupported Insight
 
 An insight that sounds plausible but lacks sufficient supporting evidence.
 
-Unsupported insights should not drive decisions without further evidence.
+---
 
 ### Contradicting Evidence
 
 Evidence that weakens or disproves an insight.
 
-Contradicting evidence should be explicitly recorded rather than ignored.
+---
 
 ### Missing Evidence
 
 Evidence required to support or reject an insight but not currently available.
 
-Missing evidence should reduce confidence and may drive further data collection.
+---
 
 ### Assumption
 
 A claim used in reasoning that has not yet been proven by available evidence.
 
-Assumptions should be made explicit.
+---
 
 ### Confidence
 
 The degree of trust assigned to an insight, judgment, or decision.
 
-Confidence should be based on strength of supporting evidence, contradicting evidence, source quality, timeline completeness, assumptions, alternatives, reproducibility, whether reported context was independently verified, and whether cold and guided analysis agree.
+Confidence should be based on:
 
-Confidence should not be based only on how plausible an explanation sounds.
+- Strength of supporting evidence
+- Presence or absence of contradicting evidence
+- Quality of sources
+- Completeness of timeline
+- Number of assumptions
+- Availability of alternative explanations
+- Reproducibility
+- Whether reported context was independently verified
+- Whether cold and guided analysis agree
+- Whether derived evidence is supported by clear derivation logic
+
+---
 
 ### Hypothesis
 
@@ -533,7 +880,7 @@ A testable candidate explanation.
 
 In EGATF, most insights begin as hypotheses.
 
-A hypothesis should be challenged before it influences decisions.
+---
 
 ### Traceability
 
@@ -547,39 +894,35 @@ Forward traceability:
 
 > What did this evidence influence?
 
+---
+
 ### Auditability
 
 The ability for another person to review the reasoning process and understand how a conclusion was reached.
 
-An auditable investigation should preserve reported context, raw source material, preparation methods, extracted evidence, sources, reasoning steps, assumptions, challenges, decisions, actions, and outcomes.
+---
 
 ### Human-in-the-Loop
 
 A design principle where humans retain responsibility for judgment, decisions, and actions.
 
-In EGATF, AI assists with reasoning, extraction, summarization, hypothesis generation, and challenge.
-
-Humans remain accountable for accepting conclusions and taking action.
+---
 
 ### Hallucination
 
 A generated claim that is false, unsupported, or not grounded in the available sources.
 
-EGATF aims to reduce the impact of hallucination by requiring evidence chains and challenge.
+---
 
 ### Pressure Test
 
 A possible alternative name for the Challenge stage.
 
-Pressure testing means deliberately applying stress to an insight to see if it survives.
+---
 
 ### Validation
 
 A possible alternative name for the Challenge stage.
-
-Validation suggests confirming an insight, while Challenge suggests actively trying to disprove it.
-
-EGATF currently uses **Challenge** because it better captures the adversarial nature of the stage.
 
 ---
 
@@ -591,9 +934,10 @@ EGATF currently uses **Challenge** because it better captures the adversarial na
 | Challenge | May be renamed to Pressure Test, Validation, or Adversarial Review |
 | Knowledge | May need clearer separation between retrieved knowledge and human domain knowledge |
 | Insight | May need clearer distinction from hypothesis |
-| Evidence | May need subtypes such as reported, direct, indirect, derived, extracted, and authoritative evidence |
-| Evidence Preparation | May need to become a named stage rather than a sub-stage |
-| Evidence Extractor | May need a broader name if tools do more than extraction |
+| Evidence | May need subtypes such as reported, direct, indirect, structured, extracted, derived, and authoritative evidence |
+| Evidence Preparation | May need to become a named top-level stage |
+| Source Transformer | May need a simpler practitioner-facing name |
+| Derived Evidence Generator | May need to be shortened |
 
 ---
 
@@ -603,10 +947,12 @@ When writing about EGATF:
 
 - Use **reported context** for unvalidated problem descriptions.
 - Use **raw source material** for untouched logs, metrics, bundles, dumps, and documents.
-- Use **evidence preparation** for parsing, filtering, normalizing, and correlating.
-- Use **extracted evidence** for clean observations with provenance.
-- Use **evidence** for raw or extracted material that can support or challenge claims.
-- Use **information** for structured observations derived from evidence.
+- Use **evidence preparation** for collection, transformation, parsing, normalization, indexing, extraction, derivation, and correlation.
+- Use **structured source material** for transformed queryable material that has not yet selected meaning.
+- Use **extracted evidence** for selected observations with provenance.
+- Use **derived evidence** for computed observations.
+- Use **correlated evidence** for relationships between observations.
+- Use **information** for structured observations and context derived from evidence.
 - Use **knowledge** for contextual understanding from trusted sources.
 - Use **insight** for candidate explanations.
 - Use **challenge** for deliberate testing of an insight.
@@ -614,8 +960,14 @@ When writing about EGATF:
 - Use **action** for doing it.
 - Use **outcome** for measuring what happened.
 - Use **learning** for reusable knowledge captured afterward.
-- Use **Evidence Extractor** for scripts that extract evidence.
+- Use **Source Transformer** for tools like `wtl` that convert raw material into queryable structure.
+- Use **Evidence Extractor** for tools that select notable observations.
+- Use **Derived Evidence Generator** for tools that compute higher-level observations.
 - Use **Helper** for scripts that create follow-up artefacts, summaries, or communications.
+
+Avoid treating structured source material as extracted evidence.
+
+Avoid treating derived evidence as direct evidence.
 
 Avoid treating insights as conclusions until they have passed through challenge.
 
@@ -642,11 +994,13 @@ Avoid using AI-generated statements as evidence unless they are directly grounde
 13. How should anchoring risk be measured?
 14. How should Evidence Extractors be validated?
 15. Should Extractors, Normalizers, and Correlators become formal tool categories?
+16. Should Source Transformers and Evidence Extractors have different output schemas?
+17. How should hybrid tools label direct, structured, extracted, and derived outputs?
 
 ---
 
 ## Revision Notes
 
-This draft updates the terminology to include the v0.2 evidence-stage refinement.
+This draft updates the terminology to include the v0.3 evidence-preparation taxonomy.
 
 Future revisions should be recorded in `framework/changelog.md`.

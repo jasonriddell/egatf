@@ -51,7 +51,7 @@ Can AI-assisted troubleshooting be made more reliable by requiring every conclus
 
 ---
 
-## Current Framework (Draft)
+## Current Framework Draft
 
 ```text
 Evidence
@@ -90,20 +90,29 @@ Raw Source Material
     ↓
 Evidence Preparation
     ↓
-Extracted Evidence
+Prepared Evidence Base
     ↓
 Information
 ```
 
-This distinction is important because ticket summaries, customer descriptions, alerts, logs, metrics, and support bundles have different reliability levels.
+Evidence Preparation is itself a broad activity. It includes:
 
-A ticket summary or customer report should guide the investigation, but should not be treated as verified cause.
+```text
+Collection
+Transformation
+Parsing
+Normalization
+Indexing
+Extraction
+Derivation
+Correlation
+```
 
-A support bundle or live telemetry snapshot is raw source material.
+This distinction is important because not every preparation tool extracts evidence.
 
-Scripts and commands that parse, filter, normalize, and correlate this material are Evidence Extractors, Normalizers, or Correlators.
+For example, a tool that converts log lines into columns and writes parquet files is primarily a **Source Transformer** or **Log Structuring Tool**. It produces **Structured Source Material**. It does not necessarily extract notable evidence.
 
-The output should be extracted evidence with provenance, not unsupported diagnosis.
+A tool that identifies leaderless tablets or under-replicated tables is performing **Derivation** and producing **Derived Evidence**.
 
 ---
 
@@ -116,6 +125,10 @@ Without evidence, an insight is speculation.
 Without traceability, an insight cannot be trusted.
 
 Without challenge, an insight cannot become wisdom.
+
+Additional evidence-preparation principle:
+
+> Use deterministic preparation tools where possible to reduce noise, preserve provenance, and give AI cleaner evidence to reason over.
 
 ---
 
@@ -137,6 +150,9 @@ Without challenge, an insight cannot become wisdom.
 - Root cause analysis
 - Retrieval-augmented diagnosis
 - Evidence preparation
+- Source transformation
+- Evidence extraction
+- Derived evidence generation
 - Cold and guided analysis
 - Anchoring risk in AI-assisted diagnosis
 - Decision intelligence
@@ -159,6 +175,7 @@ Particular interest exists in:
 - Failure modes
 - Validation approaches
 - Evidence extraction approaches
+- Evidence preparation tooling
 - Examples where guided analysis caused anchoring bias
 
 ---

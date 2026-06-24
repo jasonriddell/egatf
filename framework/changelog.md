@@ -10,7 +10,15 @@
 
 This changelog records the evolution of the Evidence-Grounded AI Troubleshooting Framework (EGATF).
 
-The goal is to preserve a clear history of how the framework changes over time, including stage names, stage ordering, terminology changes, major design decisions, open questions, removed ideas, and validation findings.
+The goal is to preserve a clear history of how the framework changes over time, including:
+
+- Stage names
+- Stage ordering
+- Terminology changes
+- Major design decisions
+- Open questions
+- Removed ideas
+- Validation findings
 
 This document should help maintain provenance and make the development of the framework auditable.
 
@@ -18,14 +26,14 @@ This document should help maintain provenance and make the development of the fr
 
 ## Versioning Approach
 
-EGATF will use simple research-stage versioning.
+EGATF uses simple research-stage versioning.
 
 Example:
 
 ```text
 v0.1 - Initial draft
 v0.2 - Evidence stage refinement
-v0.3 - Case study validation changes
+v0.3 - Evidence preparation taxonomy
 v1.0 - First stable public framework
 ```
 
@@ -33,7 +41,7 @@ A version does not imply software compatibility. It represents the maturity of t
 
 ---
 
-## v0.2 - Evidence Stage Refinement
+## v0.3 - Evidence Preparation Taxonomy
 
 **Date:** 2026-06-24  
 **Status:** Draft  
@@ -41,182 +49,174 @@ A version does not imply software compatibility. It represents the maturity of t
 
 ### Summary
 
-Refined the early part of the framework to better represent how support investigations actually begin.
+Refined the meaning of Evidence Preparation.
 
-The original v0.1 model moved directly from:
+The previous v0.2 model introduced Evidence Preparation as a sub-stage between Raw Source Material and Extracted Evidence.
 
-```text
-Evidence
-    ↓
-Information
-```
+v0.3 clarifies that Evidence Preparation is not the same as extraction.
 
-v0.2 expands the Evidence stage into a set of sub-stages:
+Evidence Preparation includes several different operations:
 
 ```text
-Reported Context
-    ↓
-Raw Source Material
-    ↓
-Evidence Preparation
-    ↓
-Extracted Evidence
-    ↓
-Information
+Collection
+Transformation
+Parsing
+Normalization
+Indexing
+Extraction
+Derivation
+Correlation
 ```
-
-This change recognizes that customer ticket summaries, alert descriptions, support bundles, logs, metrics, and extracted observations have different reliability levels and should not be treated as the same type of input.
 
 ### Added
 
-Added the following concepts:
+Added the following terms:
 
-- Reported Context
-- Raw Source Material
-- Evidence Preparation
-- Extracted Evidence
-- Cold Analysis
-- Guided Analysis
-- Anchoring Risk
-- Collector
-- Evidence Extractor
-- Normalizer
-- Correlator
-- Helper
+- Prepared Evidence Base
+- Structured Source Material
+- Parsed Source Material
+- Normalized Source Material
+- Indexed Source Material
+- Derived Evidence
+- Correlated Evidence
+- Source Transformer
+- Parser
+- Indexer
+- Derived Evidence Generator
+- Report Structuring Tool
+- Log Structuring Tool
+
+Added new document:
+
+```text
+framework/evidence-preparation.md
+```
 
 ### Changed
 
 Updated `framework/framework.md` to:
 
-- Add a new Evidence Stage Refinement section.
-- Explain how reported context should be treated.
-- Define cold and guided analysis.
-- Define evidence preparation.
-- Define extracted evidence.
-- Add evidence preparation tooling categories.
+- Replace the simple Raw Source Material to Evidence Preparation to Extracted Evidence sequence with a richer preparation model.
+- Distinguish Structured Source Material from Extracted Evidence.
+- Distinguish Extraction from Derivation.
+- Add tool classification for `wtl` and tablet report parser examples.
+- Add boundary rules for transformation, extraction, derivation, correlation, and information.
 - Update evidence chain requirements.
-- Update AI roles in the framework.
-- Add new open questions around evidence preparation and anchoring risk.
+- Update AI roles to warn that derived evidence should not be mistaken for direct evidence.
 
 Updated `framework/terminology.md` to:
 
-- Add terms for reported context, raw source material, evidence preparation, and extracted evidence.
-- Add tooling terms for collectors, extractors, normalizers, correlators, and helpers.
-- Add cold analysis, guided analysis, and anchoring risk.
-- Update the definitions of Evidence and Information.
-- Clarify that reported context is guidance, not ground truth.
+- Add Evidence Preparation operations.
+- Add output types.
+- Add Source Transformer.
+- Add Derived Evidence Generator.
+- Clarify the difference between `wtl` style tools and true extractors.
+- Clarify hybrid tools such as tablet report parser.
 
 Updated `README.md` to:
 
-- Add a short Evidence Stage Refinement section.
-- Include ticket summaries, alert descriptions, and support bundles in the problem framing.
-- Add evidence preparation and anchoring risk to the current focus areas.
+- Add Evidence Preparation taxonomy to the high-level overview.
+- Add Source Transformation and Derived Evidence Generation to focus areas.
 
 Updated `research/research-log.md` to:
 
-- Record the v0.2 refinement and rationale.
+- Record the v0.3 refinement and rationale.
 
 ### Rationale
 
-Support investigations usually do not start with clean evidence.
-
-They often start with a mixture of:
-
-- Unvalidated problem description
-- Customer-reported symptoms
-- Customer-reported cause
-- Alert wording
-- Error message
-- Support bundle snapshot
-- Live telemetry
-- Logs
-- Metrics
-- Command output
-
-The framework needs to distinguish between:
-
-1. What someone reported.
-2. What raw material is available.
-3. How that material was prepared.
-4. What evidence was extracted.
-5. What information was inferred from that evidence.
-
-This reduces the risk that AI treats a ticket summary or guided statement as verified truth.
-
-### Design Decision: Reported Context
-
-Reported context is useful but unvalidated.
-
-Rule added:
-
-> Reported context is guidance, not ground truth.
+The term Evidence Extractor was too broad for some tools.
 
 Example:
 
-> The database became slow after the upgrade.
+`wtl` converts tserver, master, and YBA logs into structured parquet files so they can be queried with DuckDB rather than searched with ripgrep.
 
-This may include a reported symptom, a timeline claim, a component claim, and a causal claim. Each must be verified separately.
+It does not consolidate, filter, or diagnose.
 
-### Design Decision: Cold and Guided Analysis
-
-Added two analysis modes.
-
-Cold analysis:
+Therefore it is better classified as:
 
 ```text
-Review raw source material without assuming the reported problem or cause is correct.
+Source Transformer / Log Structuring Tool
 ```
 
-Guided analysis:
+It produces:
 
 ```text
-Use reported context as search guidance only. Treat causal claims as hypotheses until verified.
+Structured Source Material
 ```
 
-Recommended workflow:
+not:
 
 ```text
-Cold pass
+Extracted Evidence
+```
+
+unless it also selects notable observations.
+
+A tablet report parser may perform several roles. If it loads a raw tablet report into SQLite or parquet, it is performing transformation. If it identifies leaderless tablets, under-replicated tables, or over-replicated tables, it is performing derivation.
+
+Therefore it may be a hybrid:
+
+```text
+Source Transformer + Derived Evidence Generator
+```
+
+### Design Decision: Preparation Is Broader Than Extraction
+
+Evidence Preparation now means:
+
+> Making raw source material easier to inspect, query, compare, and reason about while preserving provenance.
+
+Extraction is only one activity inside preparation.
+
+### Design Decision: Transformation Changes Shape
+
+Transformation changes the representation or storage format of source material.
+
+It does not decide what matters.
+
+Example:
+
+```text
+raw logs
     ↓
-Guided pass
-    ↓
-Compare findings
+parquet tables
 ```
 
-Reason:
+### Design Decision: Extraction Selects Observations
 
-This helps reduce anchoring bias while still allowing ticket summaries and reported errors to guide investigation.
+Extraction identifies notable observations from raw or structured material.
 
-### Design Decision: Evidence Preparation
+Example:
 
-Evidence preparation is now the term for mechanical extraction, filtering, parsing, normalizing, indexing, and correlating of raw source material.
+```text
+logs.parquet
+    ↓
+restart events
+```
 
-Rule added:
+### Design Decision: Derivation Computes Observations
 
-> Evidence preparation should reduce noise without adding unsupported meaning.
+Derivation computes higher-level observations from lower-level material.
 
-This creates a clearer boundary between preparing evidence and diagnosing cause.
+Example:
 
-### Design Decision: Evidence Extractors
+```text
+tablet peer roles
+    ↓
+tablet is leaderless
+```
 
-The preferred name for scripts that parse raw material into structured observations is now:
+### Design Decision: Hybrid Tools Are Allowed
 
-> Evidence Extractors
+Tools do not have to be physically split into separate binaries.
 
-Reason:
+However, their outputs should distinguish between:
 
-- More precise than "helpers"
-- Less problematic than "data cooking scripts"
-- Keeps the focus on evidence and provenance
-- Avoids implying final diagnosis
-
-Related categories:
-
-- Collectors
-- Evidence Extractors
-- Normalizers
-- Correlators
-- Helpers
+- Structured Source Material
+- Extracted Evidence
+- Derived Evidence
+- Correlated Evidence
+- Findings
 
 ### Current Framework Sequence
 
@@ -244,7 +244,88 @@ Outcome
 Learning
 ```
 
-The Evidence stage now contains internal sub-stages:
+The Evidence stage now contains:
+
+```text
+Reported Context
+    ↓
+Raw Source Material
+    ↓
+Evidence Preparation
+    ↓
+Prepared Evidence Base
+```
+
+The Prepared Evidence Base may contain:
+
+```text
+Structured Source Material
+Extracted Evidence
+Derived Evidence
+Correlated Evidence
+```
+
+### Open Questions Added
+
+1. Should Evidence Preparation become a top-level framework stage?
+2. Should every preparation tool declare its role?
+3. Should outputs use standard names such as `structured_source`, `extracted_evidence`, and `derived_evidence`?
+4. Should derived evidence include machine-readable derivation metadata?
+5. How should hybrid tools expose their output layers?
+6. How should extractor precision and recall be tested?
+7. Should EGATF define a minimal evidence schema?
+8. Should source transformation outputs be considered evidence or prepared source material?
+9. How should AI be told which prepared evidence is direct, extracted, derived, or correlated?
+10. What level of preparation is enough before AI analysis begins?
+
+### Current Hypothesis
+
+The v0.3 hypothesis is:
+
+> Classifying evidence preparation tools by function reduces confusion and helps prevent structured or derived outputs from being mistaken for verified diagnosis.
+
+### Next Planned Work
+
+1. Update the case study template to include:
+   - Reported Context
+   - Raw Source Material
+   - Evidence Preparation
+   - Prepared Evidence Base
+   - Structured Source Material
+   - Extracted Evidence
+   - Derived Evidence
+   - Correlated Evidence
+   - Information
+
+2. Create a synthetic worked example showing:
+   - `wtl` as a Source Transformer
+   - a query as an Evidence Extractor
+   - a tablet report parser as a hybrid Source Transformer and Derived Evidence Generator
+
+3. Consider a future document:
+   - `framework/evidence-schema.md`
+
+---
+
+## v0.2 - Evidence Stage Refinement
+
+**Date:** 2026-06-24  
+**Status:** Draft  
+**Stage:** Early research and validation
+
+### Summary
+
+Refined the early part of the framework to better represent how support investigations actually begin.
+
+The original v0.1 model moved directly from:
+
+```text
+Evidence
+    ↓
+Information
+```
+
+v0.2 expanded the Evidence stage into a set of sub-stages:
 
 ```text
 Reported Context
@@ -254,55 +335,96 @@ Raw Source Material
 Evidence Preparation
     ↓
 Extracted Evidence
+    ↓
+Information
 ```
 
-### Open Questions Added
+This change recognized that customer ticket summaries, alert descriptions, support bundles, logs, metrics, and extracted observations have different reliability levels and should not be treated as the same type of input.
 
-1. Should Evidence Preparation become a top-level framework stage?
-2. How should reported context be scored?
-3. How should cold and guided analysis be compared?
-4. How should anchoring risk be represented?
-5. How should extractor quality be tested?
-6. Should evidence have formal classes such as reported, direct, indirect, derived, extracted, and authoritative?
-7. What metadata is required for extracted evidence?
-8. Should Confidence include agreement or disagreement between cold and guided analysis?
-9. What naming will feel natural to support engineers?
-10. How should scripts distinguish extraction from interpretation?
+### Added
 
-### Current Hypothesis
+Added the following concepts:
 
-The v0.2 hypothesis is:
+- Reported Context
+- Raw Source Material
+- Evidence Preparation
+- Extracted Evidence
+- Cold Analysis
+- Guided Analysis
+- Anchoring Risk
+- Collector
+- Evidence Extractor
+- Normalizer
+- Correlator
+- Helper
 
-> Evidence preparation improves AI-assisted diagnosis by reducing noise while preserving traceability, but it must avoid embedding unsupported assumptions into the prepared evidence.
+### Rationale
 
-### Next Planned Work
+Support investigations usually do not start with clean evidence.
 
-1. Update or create a case study template that includes:
-   - Reported Context
-   - Raw Source Material
-   - Evidence Preparation
-   - Extracted Evidence
-   - Information
-   - Knowledge
-   - Insight
-   - Challenge
-   - Wisdom / Judgment
-   - Decision
-   - Action
-   - Outcome
-   - Learning
+They often start with a mixture of:
 
-2. Create a synthetic worked example showing:
-   - Cold analysis
-   - Guided analysis
-   - A guided claim that turns out to be wrong or incomplete
+- Unvalidated problem description
+- Customer-reported symptoms
+- Customer-reported cause
+- Alert wording
+- Error message
+- Support bundle snapshot
+- Live telemetry
+- Logs
+- Metrics
+- Command output
 
-3. Add future research into:
-   - Evidence quality
-   - Claim reliability
-   - Anchoring bias
-   - AI-assisted evidence extraction
-   - Tool validation
+The framework needs to distinguish between:
+
+1. What someone reported.
+2. What raw material is available.
+3. How that material was prepared.
+4. What evidence was extracted.
+5. What information was inferred from that evidence.
+
+### Design Decision: Reported Context
+
+Reported context is useful but unvalidated.
+
+Rule added:
+
+> Reported context is guidance, not ground truth.
+
+### Design Decision: Cold and Guided Analysis
+
+Added two analysis modes:
+
+```text
+Cold Analysis
+Guided Analysis
+```
+
+Recommended workflow:
+
+```text
+Cold pass
+    ↓
+Guided pass
+    ↓
+Compare findings
+```
+
+### Design Decision: Evidence Preparation
+
+Evidence preparation was introduced as the term for mechanical extraction, filtering, parsing, normalizing, indexing, and correlating of raw source material.
+
+Rule added:
+
+> Evidence preparation should reduce noise without adding unsupported meaning.
+
+### Design Decision: Evidence Extractors
+
+The preferred name for scripts that parse raw material into structured observations was:
+
+> Evidence Extractors
+
+v0.3 later refined this by distinguishing Source Transformers from Evidence Extractors.
 
 ---
 
@@ -352,16 +474,6 @@ Supporting statements:
 > Without traceability, an insight cannot be trusted.  
 > Without challenge, an insight cannot become wisdom.
 
-### Initial Problem Statement
-
-AI systems are increasingly capable of analysing logs, metrics, support bundles, documentation, source code, bug reports, and operational observations.
-
-However, AI-generated explanations are often plausible without being sufficiently grounded.
-
-The framework begins from the observation that:
-
-> AI is often better at generating explanations than demonstrating why those explanations should be trusted.
-
 ### Initial Research Question
 
 Can AI-assisted troubleshooting be made more reliable by requiring every conclusion to be traceable back to evidence and every insight to survive deliberate challenge before influencing decisions?
@@ -391,26 +503,6 @@ The framework does not position AI as the final decision maker.
 Reason:
 
 AI can assist with extraction, summarization, retrieval, hypothesis generation, and challenge, but humans remain accountable for judgment, decisions, and actions.
-
-### Provisional Terms at v0.1
-
-The following terms required further testing:
-
-| Term | Reason Under Review |
-|---|---|
-| Wisdom | May be too abstract or difficult to distinguish from judgment |
-| Challenge | May be renamed to Pressure Test, Validation, or Adversarial Review |
-| Insight | May need clearer separation from Hypothesis |
-| Knowledge | May need clearer separation between retrieved knowledge and human domain knowledge |
-| Evidence | May need subtypes such as direct, indirect, derived, and authoritative evidence |
-
-### Current Hypothesis
-
-The strongest potential contribution of EGATF is the formal introduction of a **Challenge** stage into AI-assisted troubleshooting.
-
-The key hypothesis is:
-
-> A formal Challenge stage improves the quality and trustworthiness of AI-assisted troubleshooting by forcing insights to be tested against supporting, missing, and contradicting evidence before they influence human decisions.
 
 ---
 
