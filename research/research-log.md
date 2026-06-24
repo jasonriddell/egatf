@@ -10,18 +10,7 @@
 
 This document records the chronological development of the Evidence-Grounded AI Troubleshooting Framework (EGATF).
 
-The research log is intended to capture:
-
-- Research questions
-- Prior-art discoveries
-- Design decisions
-- Terminology changes
-- Open concerns
-- Validation ideas
-- Case study candidates
-- Publication planning
-- Tooling ideas
-- Important unresolved questions
+The research log is intended to capture research questions, prior-art discoveries, design decisions, terminology changes, open concerns, validation ideas, case study candidates, publication planning, tooling ideas, and important unresolved questions.
 
 This document is different from `framework/changelog.md`.
 
@@ -31,38 +20,210 @@ The research log records the thinking, investigation, and discovery process arou
 
 ---
 
-## How to Use This Log
+## 2026-06-24 - Evidence Stage Refinement
 
-Add entries whenever meaningful progress is made.
-
-Useful entry types:
-
-- Research note
-- Design decision
-- Open question
-- Reference discovered
-- Case study idea
-- Validation result
-- Terminology concern
-- Publication idea
-- Tool idea
-
-Suggested entry format:
-
-```text
-## YYYY-MM-DD - Short Title
-
-Type:
-Status:
+**Type:** Framework refinement  
+**Status:** Recorded
 
 ### Summary
 
+Refined the early part of EGATF after identifying that support investigations rarely begin with clean evidence.
+
+They usually begin with a mixture of:
+
+- Customer problem description
+- Ticket summary
+- Alert title
+- Reported error message
+- Support bundle
+- Live metrics
+- Logs
+- Command output
+- Observations from first responders
+
+The framework now distinguishes between:
+
+```text
+Reported Context
+    ↓
+Raw Source Material
+    ↓
+Evidence Preparation
+    ↓
+Extracted Evidence
+    ↓
+Information
+```
+
 ### Why It Matters
+
+The original v0.1 flow moved directly from Evidence to Information.
+
+That was too coarse.
+
+A customer or ticket creator may provide a useful description, but that description is unvalidated. It may contain symptoms, timeline claims, component claims, and causal claims. Those claims should guide investigation, but should not be treated as verified truth.
+
+A support bundle or live environment snapshot is raw source material. It is not yet information.
+
+Scripts, commands, and filters that extract useful observations from raw source material are part of evidence preparation. Their output should be extracted evidence with provenance, not unsupported diagnosis.
 
 ### Notes
 
+Added this rule:
+
+> Reported context is guidance, not ground truth.
+
+Added this rule:
+
+> Evidence preparation should reduce noise without adding unsupported meaning.
+
+Added preferred naming:
+
+> Evidence Extractor
+
+This term is preferred for scripts that parse raw source material and produce structured evidence with provenance.
+
+Other tooling categories:
+
+- Collector
+- Evidence Extractor
+- Normalizer
+- Correlator
+- Helper
+
+The term **Helper** should be reserved for later workflow assistance, such as generating an engineering escalation, customer update, or post-incident review outline.
+
 ### Follow-up
+
+- Update framework document.
+- Update terminology document.
+- Update changelog.
+- Update README.
+- Update case study template to include the refined Evidence sub-stages.
+- Create a synthetic case showing cold analysis, guided analysis, and anchoring risk.
+
+---
+
+## 2026-06-24 - Cold and Guided Analysis
+
+**Type:** Analysis model  
+**Status:** Recorded
+
+### Summary
+
+Introduced two analysis modes:
+
+```text
+Cold Analysis
+Guided Analysis
 ```
+
+Cold analysis reviews raw source material without assuming that the reported problem or reported cause is correct.
+
+Guided analysis uses reported context to guide search and extraction, but treats causal claims as hypotheses only.
+
+Recommended workflow:
+
+```text
+Cold pass
+    ↓
+Guided pass
+    ↓
+Compare findings
+```
+
+### Why It Matters
+
+Guided statements can be useful, especially when a support bundle is large and noisy.
+
+However, they can also create anchoring bias.
+
+If the ticket says "the upgrade caused latency", AI may focus on upgrade-related evidence and miss an unrelated disk, network, load, or configuration event.
+
+Cold analysis creates an independent baseline.
+
+Guided analysis tests the reported context.
+
+Comparing the two helps identify where the report was correct, incomplete, misleading, or wrong.
+
+### Notes
+
+This creates a possible future validation pattern:
+
+1. Run AI cold against prepared evidence.
+2. Run AI guided by ticket summary.
+3. Compare findings.
+4. Identify whether guidance improved focus or created bias.
+5. Record where guided analysis changed confidence.
+
+### Follow-up
+
+Create a case study template section for:
+
+- Cold analysis findings
+- Guided analysis findings
+- Differences
+- Anchoring risks
+- Claims verified
+- Claims rejected
+
+---
+
+## 2026-06-24 - Evidence Extractors Naming
+
+**Type:** Terminology decision  
+**Status:** Recorded
+
+### Summary
+
+Chose **Evidence Extractor** as the preferred term for scripts, commands, or tools that extract useful observations from raw diagnostic material.
+
+Rejected or deprioritized alternatives:
+
+- Helpers
+- Fact finders
+- Data cooking scripts
+
+### Why It Matters
+
+"Helpers" is too broad and better fits later workflow scripts, such as generating engineering escalations or summaries.
+
+"Fact finders" is friendly, but may overstate what the scripts do. A script may extract observations, but those observations still need context, provenance, and sometimes verification.
+
+"Data cooking scripts" is risky because "cooking data" can imply altering or massaging data to fit a theory.
+
+"Evidence Extractor" fits the framework language and keeps provenance central.
+
+### Notes
+
+Current tooling taxonomy:
+
+```text
+Collectors
+    Gather raw source material.
+
+Evidence Extractors
+    Extract structured observations with provenance.
+
+Normalizers
+    Convert data into consistent formats.
+
+Correlators
+    Compare extracted evidence across time, nodes, components, or sources.
+
+Helpers
+    Support communication, escalation, reporting, or follow-up.
+```
+
+### Follow-up
+
+Consider whether these categories should become a dedicated document later, possibly:
+
+```text
+framework/tooling-taxonomy.md
+```
+
+Do not create this file yet unless the tooling concepts continue to expand.
 
 ---
 
@@ -95,15 +256,6 @@ Current recommended repository visibility:
 
 - Private during early formation
 - Potentially public once terminology, examples, and prior art are stronger
-
-### Follow-up
-
-- Add initial framework definition
-- Add terminology glossary
-- Add changelog
-- Add prior-art register
-- Add bibliography
-- Add first case study template
 
 ---
 
@@ -166,10 +318,6 @@ Stages under review:
 
 The term **Wisdom** may be too abstract. It currently represents human judgment after challenge, but may be renamed or removed later.
 
-### Follow-up
-
-Test whether the Wisdom stage is useful in real case studies.
-
 ---
 
 ## 2026-06-22 - Core Principle Identified
@@ -194,21 +342,6 @@ Supporting language:
 This principle separates EGATF from generic AI troubleshooting.
 
 The framework is not only about generating explanations. It is about preserving an auditable path from source material to decision.
-
-### Notes
-
-This principle should appear consistently in:
-
-- README
-- Framework definition
-- Articles
-- Whitepaper
-- Diagrams
-- Case study templates
-
-### Follow-up
-
-Develop examples showing backward traceability from decision to evidence.
 
 ---
 
@@ -238,65 +371,6 @@ and
 ```text
 Evidence-grounded AI-assisted troubleshooting
 ```
-
-### Notes
-
-Challenge questions include:
-
-- What evidence supports this insight?
-- What evidence contradicts this insight?
-- What evidence is missing?
-- What assumptions does this depend on?
-- What alternative explanations exist?
-- Did the timeline happen in the required order?
-- Does source code support this interpretation?
-- Is the documentation relevant to the correct version?
-
-### Follow-up
-
-Collect examples where Challenge rejects or weakens an initially plausible AI-generated hypothesis.
-
----
-
-## 2026-06-22 - Initial Artefacts Created
-
-**Type:** Artefact tracking  
-**Status:** Recorded
-
-### Summary
-
-Created initial repository artefacts:
-
-- `README.md`
-- `framework/framework.md`
-- `framework/terminology.md`
-- `framework/changelog.md`
-- `research/prior-art.md`
-
-### Why It Matters
-
-These files form the foundation of the project.
-
-They establish:
-
-- Project purpose
-- Canonical framework definition
-- Working terminology
-- Framework change history
-- Initial prior-art mapping
-
-### Notes
-
-Current recommended next artefacts:
-
-1. `research/research-log.md`
-2. `research/bibliography.md`
-3. `cases/001-example.md`
-4. `articles/01-introduction.md`
-
-### Follow-up
-
-Create bibliography and first case study template.
 
 ---
 
@@ -338,198 +412,6 @@ Avoid overclaiming:
 
 > EGATF is the first framework for AI troubleshooting.
 
-### Follow-up
-
-Create `research/bibliography.md` with proper references and links.
-
----
-
-## 2026-06-22 - Initial Publication Strategy
-
-**Type:** Publication planning  
-**Status:** Draft
-
-### Summary
-
-Identified a staged publication strategy:
-
-```text
-GitHub
-    ↓
-LinkedIn
-    ↓
-Medium
-    ↓
-Whitepaper
-```
-
-### Why It Matters
-
-GitHub should act as the source of truth.
-
-LinkedIn is likely best for feedback and discovery among engineers, architects, SREs, and AI practitioners.
-
-Medium can host longer article versions.
-
-A whitepaper should wait until the framework has examples, feedback, and revision history.
-
-### Notes
-
-Recommended sequence:
-
-1. Develop framework privately.
-2. Apply to 3-5 case studies.
-3. Get trusted peer feedback.
-4. Publish practitioner article.
-5. Iterate.
-6. Produce whitepaper.
-7. Consider tooling only after validation.
-
-### Follow-up
-
-Draft article outline once the foundational repository files are complete.
-
----
-
-## 2026-06-22 - Tooling Strategy
-
-**Type:** Tool planning  
-**Status:** Deferred
-
-### Summary
-
-Decided not to build a tool immediately.
-
-Recommended order:
-
-```text
-Framework
-    ↓
-Examples
-    ↓
-Validation
-    ↓
-Community Feedback
-    ↓
-Tool
-```
-
-### Why It Matters
-
-A tool built too early may encode the wrong model.
-
-The current priority is validating whether the framework itself is useful and understandable.
-
-### Notes
-
-Possible future tools:
-
-- Markdown case study template
-- YAML evidence-chain schema
-- CLI for investigation notes
-- Local evidence indexer
-- RAG-based case study assistant
-- Hypothesis challenge assistant
-- Evidence graph visualizer
-
-### Follow-up
-
-After case studies, identify the smallest useful tool.
-
----
-
-## 2026-06-22 - Employment and Publication Concern
-
-**Type:** Risk note  
-**Status:** Open
-
-### Summary
-
-Recognized a need to consider employment agreement, intellectual property, and publication policies before making the repository public.
-
-### Why It Matters
-
-The project is currently being developed personally, but the subject matter overlaps with professional experience in technical diagnosis and support engineering.
-
-Before public release, it is sensible to review:
-
-- Employment contract
-- IP agreement
-- Invention assignment language
-- Publication policy
-- Use of company resources
-- Confidentiality obligations
-
-### Notes
-
-Current safe practice:
-
-- Use personal repository
-- Keep repository private initially
-- Do not include customer data
-- Do not include proprietary internal information
-- Use sanitized, synthetic, or public case studies
-- Avoid using company-owned material unless explicitly permitted
-
-### Follow-up
-
-Review relevant agreements before public release.
-
----
-
-## 2026-06-22 - Case Study Direction
-
-**Type:** Validation planning  
-**Status:** Open
-
-### Summary
-
-Identified case studies as the most important next validation mechanism.
-
-Potential case study sources:
-
-- Sanitized support cases
-- Public incident reports
-- Synthetic distributed systems examples
-- Public bug reports
-- Public source code issues
-- Reconstructed troubleshooting scenarios
-
-### Why It Matters
-
-The framework will only become credible if it can be applied to real or realistic investigations.
-
-The most valuable examples will show where Challenge changes the result.
-
-### Notes
-
-Ideal case study structure:
-
-```text
-Evidence
-Information
-Knowledge
-Insight
-Challenge
-Wisdom / Judgment
-Decision
-Action
-Outcome
-Learning
-```
-
-Important case study types:
-
-1. AI insight accepted after challenge
-2. AI insight rejected after challenge
-3. Competing insights compared
-4. Missing evidence prevents conclusion
-5. Contradicting evidence changes decision
-
-### Follow-up
-
-Create `cases/001-example.md` as a reusable template.
-
 ---
 
 ## Open Research Questions
@@ -551,6 +433,11 @@ Current open questions:
 13. How should source authority be ranked?
 14. How should version-specific documentation and source code be handled?
 15. How should private or customer-sensitive evidence be sanitized?
+16. Should Evidence Preparation become a top-level stage?
+17. How should cold and guided analysis be compared?
+18. How should anchoring risk be measured?
+19. How should Evidence Extractors be validated?
+20. Should extractor outputs have a standard schema?
 
 ---
 
@@ -559,15 +446,16 @@ Current open questions:
 Potential article sequence:
 
 1. Why AI Troubleshooting Needs Evidence Grounding
-2. From Logs to Evidence: The First Step in Safe AI Diagnosis
-3. Information Is Not Insight: Structuring Observations for AI
-4. Knowledge Sources: Documentation, Source Code, Bugs, and History
-5. Why AI Insights Must Be Treated as Hypotheses
-6. The Challenge Stage: Making AI Argue Against Itself
-7. Human Judgment After AI Analysis
-8. From Decision to Action Without Losing the Evidence Chain
-9. Learning Loops: Turning Incidents into Future Diagnostic Memory
-10. Evidence-Grounded AI Troubleshooting: A Worked Example
+2. From Ticket Summary to Evidence: Avoiding Anchoring Bias
+3. From Raw Source Material to Extracted Evidence
+4. Information Is Not Insight: Structuring Observations for AI
+5. Knowledge Sources: Documentation, Source Code, Bugs, and History
+6. Why AI Insights Must Be Treated as Hypotheses
+7. The Challenge Stage: Making AI Argue Against Itself
+8. Human Judgment After AI Analysis
+9. From Decision to Action Without Losing the Evidence Chain
+10. Learning Loops: Turning Incidents into Future Diagnostic Memory
+11. Evidence-Grounded AI Troubleshooting: A Worked Example
 
 ---
 
@@ -585,6 +473,11 @@ Possible ways to evaluate EGATF:
 - Agreement between independent reviewers
 - Corrective action quality
 - Reuse of learning in future cases
+- Agreement between cold and guided analysis
+- Number of guided claims verified
+- Number of guided claims rejected
+- Number of unexpected cold analysis findings
+- Evidence extractor precision and recall
 
 ---
 

@@ -1,7 +1,7 @@
 # EGATF Terminology
 
 **Document type:** Working glossary  
-**Status:** Draft v0.1  
+**Status:** Draft v0.2  
 **Repository path:** `framework/terminology.md`
 
 ---
@@ -18,46 +18,135 @@ Some terms are stable. Others are provisional and may change after testing the f
 
 ## Core Terms
 
-### Evidence
+### Reported Context
 
-Raw material from an observable or authoritative source.
+An unvalidated description of the problem provided by a customer, alert, first responder, support engineer, or ticket creator.
 
 Examples:
 
-- Log line
-- Metric sample
-- Trace span
-- Stack trace
+- Ticket summary
+- Customer problem statement
+- Alert description
+- Customer-provided error message
+- First responder notes
+- Escalation summary
+
+Reported context answers:
+
+> What does someone currently believe or report is happening?
+
+Reported context is useful for direction, but must not be treated as verified cause.
+
+Rule:
+
+> Reported context is guidance, not ground truth.
+
+---
+
+### Raw Source Material
+
+Untouched diagnostic material available to the investigation.
+
+Examples:
+
+- Support bundle archive
+- Logs
+- Metrics export
+- Trace export
 - Core dump
-- Configuration value
-- Source code reference
-- Documentation statement
-- Bug report
-- Customer observation
+- Configuration dump
 - Command output
-- Timestamped event
+- Database metadata
+- Source code snapshot
+- Documentation page
+- Bug report contents
+- Ticket text
+
+Raw source material answers:
+
+> What material is available for analysis?
+
+Raw source material is not yet information. It must be prepared, extracted, and interpreted.
+
+---
+
+### Evidence Preparation
+
+The process of extracting, filtering, parsing, normalizing, indexing, and correlating raw source material without adding unsupported diagnosis.
+
+Examples:
+
+- Extract all restart events
+- Extract all ERROR and FATAL log lines
+- Parse version and build information
+- Extract configuration values
+- Build node inventory
+- Normalize timestamps
+- Group repeated stack traces
+- Identify gaps in logs or metrics
+- Compare events across nodes
+
+Evidence preparation answers:
+
+> How do we turn raw source material into usable extracted evidence?
+
+Rule:
+
+> Evidence preparation should reduce noise without adding unsupported meaning.
+
+---
+
+### Extracted Evidence
+
+A clean observation produced from raw source material with provenance.
+
+Examples:
+
+```text
+At 2026-06-21 10:14:22 UTC, tserver-3 restarted.
+Source: tserver.log line 18422.
+```
+
+```text
+CPU usage on node-2 exceeded 95 percent for 11 minutes.
+Source: metrics.csv.
+```
+
+```text
+The flag ysql_output_buffer_size was set to 262144.
+Source: gflags.json.
+```
+
+Extracted evidence answers:
+
+> What verified observation can be traced back to source material?
+
+Extracted evidence should include observation, source, timestamp or time range, component, extraction method, confidence in source reliability, and limitations.
+
+---
+
+### Evidence
+
+Observable, reported, collected, or extracted material that can support or challenge a claim.
+
+In EGATF v0.2, Evidence includes:
+
+- Reported context
+- Raw source material
+- Evidence preparation output
+- Extracted evidence
 
 Evidence answers:
 
-> What was observed?
+> What was observed, reported, collected, or extracted?
 
 Evidence should be recorded with enough context that another person can review it independently.
-
-Useful metadata:
-
-- Source
-- Timestamp
-- System or component
-- Version
-- Collection method
-- Reliability of source
-- Whether the evidence is direct or indirect
 
 ---
 
 ### Information
 
-Evidence that has been structured, normalized, summarized, grouped, or placed into context.
+Evidence that has been structured into meaningful observations, timelines, comparisons, or relationships.
 
 Examples:
 
@@ -66,12 +155,15 @@ Examples:
 - Leader movement began after disk latency increased.
 - The same error occurred across three nodes.
 - The failure only appeared after a configuration change.
+- The reported error appears in logs, but outside the reported time window.
 
 Information answers:
 
 > What happened?
 
 Information must remain linked to the evidence it was derived from.
+
+Information may include interpretation, but should stop short of root cause diagnosis.
 
 ---
 
@@ -133,8 +225,8 @@ Challenge questions include:
 - Is the documentation relevant to the correct product version?
 - Does the source code support this interpretation?
 - Could the same symptoms be caused by something else?
-- What would we expect to see if this insight were true?
-- What would we expect to see if this insight were false?
+- Did guided analysis anchor the investigation too strongly?
+- Did cold analysis find anomalies that guided analysis missed?
 
 Challenge answers:
 
@@ -152,14 +244,7 @@ Wisdom answers:
 
 > What should we believe, given the evidence and uncertainty?
 
-Wisdom should include:
-
-- Confidence level
-- Remaining uncertainty
-- Known assumptions
-- Risk of being wrong
-- Consequences of action
-- Whether more evidence is required
+Wisdom should include confidence level, remaining uncertainty, known assumptions, risk of being wrong, consequences of action, and whether more evidence is required.
 
 Status:
 
@@ -173,17 +258,6 @@ Wisdom may be renamed or removed in a future version of the framework if testing
 
 The selection of a response based on the current best judgment.
 
-Examples:
-
-- Collect more logs.
-- Escalate to engineering.
-- Apply a known workaround.
-- Change configuration.
-- Roll back a release.
-- Open a bug.
-- Communicate a suspected cause.
-- Take no immediate action and continue observing.
-
 Decision answers:
 
 > What will we do next?
@@ -195,18 +269,6 @@ A decision should be linked to the insight or judgment that justified it.
 ### Action
 
 The execution of a decision.
-
-Examples:
-
-- Restarting a service
-- Applying a patch
-- Changing a timeout
-- Running a diagnostic command
-- Capturing a core dump
-- Enabling additional logging
-- Opening a pull request
-- Updating a runbook
-- Communicating to stakeholders
 
 Action answers:
 
@@ -220,16 +282,6 @@ Actions should be recorded because outcome analysis depends on knowing what chan
 
 The measured result of an action.
 
-Examples:
-
-- Error rate decreased.
-- Latency returned to baseline.
-- Issue reproduced again.
-- Workaround failed.
-- Customer impact stopped.
-- New failure mode appeared.
-- Hypothesis was disproven.
-
 Outcome answers:
 
 > Did it work?
@@ -242,24 +294,165 @@ Outcome should feed back into the evidence base.
 
 Reusable knowledge captured from an investigation.
 
-Examples:
-
-- Knowledge base article
-- Runbook update
-- Bug report
-- Test case
-- Monitoring rule
-- Alert improvement
-- Documentation correction
-- Source code comment
-- Training example
-- Case study
-
 Learning answers:
 
 > What should future investigations know?
 
 Learning closes the loop by turning one investigation into improved future diagnosis.
+
+---
+
+## Analysis Modes
+
+### Cold Analysis
+
+Analysis of raw source material without using reported context as the primary guide.
+
+Purpose:
+
+- Reduce anchoring bias
+- Find unexpected anomalies
+- Establish independent observations
+- Avoid overfitting to the ticket description
+
+Cold analysis answers:
+
+> What does the material show before we assume the ticket summary is correct?
+
+---
+
+### Guided Analysis
+
+Analysis that uses reported context to guide search, filtering, and extraction.
+
+Purpose:
+
+- Focus on relevant time windows
+- Search for reported error messages
+- Prioritize affected components
+- Verify or reject reported claims
+
+Guided analysis answers:
+
+> What do we find when we use the reported context as search guidance?
+
+Rule:
+
+> Guided analysis should treat reported context as direction, not proof.
+
+---
+
+### Anchoring Risk
+
+The risk that an investigation becomes overly influenced by the initial problem description, customer statement, alert title, or first hypothesis.
+
+Example:
+
+A customer reports that an upgrade caused latency. AI then focuses only on upgrade-related evidence and misses a disk event that started earlier.
+
+Anchoring risk should be considered whenever guided analysis is used.
+
+---
+
+## Tooling Terms
+
+### Collector
+
+A script, command, or tool that gathers raw source material.
+
+Examples:
+
+- Collect logs
+- Export metrics
+- Capture configuration
+- Collect Kubernetes events
+- Package support bundle data
+
+Collectors answer:
+
+> What raw material can we collect?
+
+---
+
+### Evidence Extractor
+
+A script, command, or tool that extracts structured observations from raw source material while preserving provenance.
+
+Examples:
+
+- Extract restart events
+- Extract error messages
+- Extract gflags
+- Extract version information
+- Extract metric anomalies
+- Extract process lifecycle events
+
+Evidence Extractors answer:
+
+> What evidence can we extract from the raw material?
+
+Preferred generic name:
+
+> Evidence Extractor
+
+This is preferred over "helper" because the purpose is evidence preparation, not later workflow assistance.
+
+---
+
+### Normalizer
+
+A script, command, or tool that converts raw or extracted data into consistent forms.
+
+Examples:
+
+- Normalize timestamps to UTC
+- Normalize hostnames
+- Normalize node names
+- Normalize log severity
+- Normalize component names
+
+Normalizers answer:
+
+> How do we make evidence comparable?
+
+---
+
+### Correlator
+
+A script, command, or tool that compares extracted evidence across time, nodes, components, or sources.
+
+Examples:
+
+- Compare restart time against memory pressure
+- Compare leader changes against disk latency
+- Compare reported time window against log evidence
+- Compare error rates across nodes
+
+Correlators answer:
+
+> What relationships exist between extracted evidence items?
+
+---
+
+### Helper
+
+A script, command, or tool that assists later workflow tasks after investigation or during communication.
+
+Examples:
+
+- Generate engineering escalation
+- Draft customer update
+- Create case summary
+- Generate post-incident review outline
+- Format a bug report
+
+Helpers answer:
+
+> How do we turn the investigation into a useful follow-up artefact?
+
+Rule:
+
+> Extractors and correlators prepare evidence. Helpers support communication, escalation, or follow-up.
 
 ---
 
@@ -280,21 +473,12 @@ Challenged Insight
     ↓ derived from
 Knowledge + Information
     ↓ grounded in
-Evidence
+Extracted Evidence
+    ↓ prepared from
+Raw Source Material
+    ↓ optionally guided by
+Reported Context
 ```
-
-A strong evidence chain shows:
-
-- What was observed
-- How observations were interpreted
-- Which knowledge sources were used
-- Which insights were generated
-- How those insights were challenged
-- Why a decision was made
-- What action was taken
-- What outcome resulted
-
----
 
 ### Source of Truth
 
@@ -311,91 +495,37 @@ Examples:
 
 A source of truth is context-dependent.
 
-Source code may be authoritative for implementation behavior, while documentation may be authoritative for intended behavior.
-
----
-
 ### Unsupported Insight
 
 An insight that sounds plausible but lacks sufficient supporting evidence.
 
-Example:
-
-> The outage was caused by network failure.
-
-This is unsupported if no network metrics, logs, packet loss data, or timeline evidence support it.
-
 Unsupported insights should not drive decisions without further evidence.
-
----
 
 ### Contradicting Evidence
 
 Evidence that weakens or disproves an insight.
 
-Example:
-
-Insight:
-
-> The restart was caused by memory pressure.
-
-Contradicting evidence:
-
-> Memory pressure occurred after the restart, not before it.
-
 Contradicting evidence should be explicitly recorded rather than ignored.
-
----
 
 ### Missing Evidence
 
 Evidence required to support or reject an insight but not currently available.
 
-Example:
-
-Insight:
-
-> Disk latency caused request timeouts.
-
-Missing evidence:
-
-> No disk latency metrics are available for the affected time window.
-
 Missing evidence should reduce confidence and may drive further data collection.
-
----
 
 ### Assumption
 
 A claim used in reasoning that has not yet been proven by available evidence.
 
-Example:
-
-> The affected node was the leader at the time of the timeout.
-
-If this has not been confirmed through logs, metrics, or metadata, it remains an assumption.
-
 Assumptions should be made explicit.
-
----
 
 ### Confidence
 
 The degree of trust assigned to an insight, judgment, or decision.
 
-Confidence should be based on:
-
-- Strength of supporting evidence
-- Presence or absence of contradicting evidence
-- Quality of sources
-- Completeness of timeline
-- Number of assumptions
-- Availability of alternative explanations
-- Reproducibility
+Confidence should be based on strength of supporting evidence, contradicting evidence, source quality, timeline completeness, assumptions, alternatives, reproducibility, whether reported context was independently verified, and whether cold and guided analysis agree.
 
 Confidence should not be based only on how plausible an explanation sounds.
-
----
 
 ### Hypothesis
 
@@ -404,8 +534,6 @@ A testable candidate explanation.
 In EGATF, most insights begin as hypotheses.
 
 A hypothesis should be challenged before it influences decisions.
-
----
 
 ### Traceability
 
@@ -419,26 +547,11 @@ Forward traceability:
 
 > What did this evidence influence?
 
-Traceability is essential for auditability and trust.
-
----
-
 ### Auditability
 
 The ability for another person to review the reasoning process and understand how a conclusion was reached.
 
-An auditable investigation should preserve:
-
-- Evidence
-- Sources
-- Reasoning steps
-- Assumptions
-- Challenges
-- Decisions
-- Actions
-- Outcomes
-
----
+An auditable investigation should preserve reported context, raw source material, preparation methods, extracted evidence, sources, reasoning steps, assumptions, challenges, decisions, actions, and outcomes.
 
 ### Human-in-the-Loop
 
@@ -448,34 +561,17 @@ In EGATF, AI assists with reasoning, extraction, summarization, hypothesis gener
 
 Humans remain accountable for accepting conclusions and taking action.
 
----
-
 ### Hallucination
 
 A generated claim that is false, unsupported, or not grounded in the available sources.
 
-In troubleshooting, hallucination may appear as:
-
-- Invented root cause
-- Incorrect product behavior
-- Misread log meaning
-- False source code interpretation
-- Unsupported recommendation
-- Confident statement without evidence
-
 EGATF aims to reduce the impact of hallucination by requiring evidence chains and challenge.
-
----
 
 ### Pressure Test
 
 A possible alternative name for the Challenge stage.
 
 Pressure testing means deliberately applying stress to an insight to see if it survives.
-
-This term may be useful in practitioner-facing articles because it is more conversational than "challenge" or "validation".
-
----
 
 ### Validation
 
@@ -489,15 +585,15 @@ EGATF currently uses **Challenge** because it better captures the adversarial na
 
 ## Provisional Terms Under Review
 
-The following terms may change as the framework evolves:
-
 | Current Term | Reason Under Review |
 |---|---|
 | Wisdom | May be too abstract or difficult to distinguish from judgment |
 | Challenge | May be renamed to Pressure Test, Validation, or Adversarial Review |
 | Knowledge | May need clearer separation between retrieved knowledge and human domain knowledge |
 | Insight | May need clearer distinction from hypothesis |
-| Evidence | May need subtypes such as direct, indirect, derived, and authoritative evidence |
+| Evidence | May need subtypes such as reported, direct, indirect, derived, extracted, and authoritative evidence |
+| Evidence Preparation | May need to become a named stage rather than a sub-stage |
+| Evidence Extractor | May need a broader name if tools do more than extraction |
 
 ---
 
@@ -505,7 +601,11 @@ The following terms may change as the framework evolves:
 
 When writing about EGATF:
 
-- Use **evidence** for raw observed or authoritative material.
+- Use **reported context** for unvalidated problem descriptions.
+- Use **raw source material** for untouched logs, metrics, bundles, dumps, and documents.
+- Use **evidence preparation** for parsing, filtering, normalizing, and correlating.
+- Use **extracted evidence** for clean observations with provenance.
+- Use **evidence** for raw or extracted material that can support or challenge claims.
 - Use **information** for structured observations derived from evidence.
 - Use **knowledge** for contextual understanding from trusted sources.
 - Use **insight** for candidate explanations.
@@ -514,8 +614,12 @@ When writing about EGATF:
 - Use **action** for doing it.
 - Use **outcome** for measuring what happened.
 - Use **learning** for reusable knowledge captured afterward.
+- Use **Evidence Extractor** for scripts that extract evidence.
+- Use **Helper** for scripts that create follow-up artefacts, summaries, or communications.
 
 Avoid treating insights as conclusions until they have passed through challenge.
+
+Avoid treating reported context as verified cause.
 
 Avoid using AI-generated statements as evidence unless they are directly grounded in cited sources.
 
@@ -533,11 +637,16 @@ Avoid using AI-generated statements as evidence unless they are directly grounde
 8. How should contradictory evidence be visualized?
 9. How should missing evidence affect confidence?
 10. What terminology will be clearest to support engineers, SREs, and architects?
+11. Should Evidence Preparation become a top-level framework stage?
+12. How should cold and guided analysis be compared?
+13. How should anchoring risk be measured?
+14. How should Evidence Extractors be validated?
+15. Should Extractors, Normalizers, and Correlators become formal tool categories?
 
 ---
 
 ## Revision Notes
 
-This is the initial terminology draft.
+This draft updates the terminology to include the v0.2 evidence-stage refinement.
 
 Future revisions should be recorded in `framework/changelog.md`.

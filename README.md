@@ -18,7 +18,7 @@ The framework is currently under active development and should be considered a w
 
 ## The Problem
 
-Modern systems generate vast amounts of diagnostic information:
+Modern systems generate vast amounts of diagnostic material:
 
 - Logs
 - Metrics
@@ -30,6 +30,8 @@ Modern systems generate vast amounts of diagnostic information:
 - Bug reports
 - Customer observations
 - Historical incidents
+- Ticket summaries
+- Alert descriptions
 
 AI systems are increasingly capable of analysing these sources and generating explanations.
 
@@ -51,27 +53,57 @@ Can AI-assisted troubleshooting be made more reliable by requiring every conclus
 
 ## Current Framework (Draft)
 
+```text
 Evidence
-↓
+    ↓
 Information
-↓
+    ↓
 Knowledge
-↓
+    ↓
 Insight
-↓
+    ↓
 Challenge
-↓
+    ↓
 Wisdom
-↓
+    ↓
 Decision
-↓
+    ↓
 Action
-↓
+    ↓
 Outcome
-↓
+    ↓
 Learning
+```
 
 The framework remains experimental and individual stages may evolve as research progresses.
+
+---
+
+## Evidence Stage Refinement
+
+The Evidence stage contains several distinct sub-stages:
+
+```text
+Reported Context
+    ↓
+Raw Source Material
+    ↓
+Evidence Preparation
+    ↓
+Extracted Evidence
+    ↓
+Information
+```
+
+This distinction is important because ticket summaries, customer descriptions, alerts, logs, metrics, and support bundles have different reliability levels.
+
+A ticket summary or customer report should guide the investigation, but should not be treated as verified cause.
+
+A support bundle or live telemetry snapshot is raw source material.
+
+Scripts and commands that parse, filter, normalize, and correlate this material are Evidence Extractors, Normalizers, or Correlators.
+
+The output should be extracted evidence with provenance, not unsupported diagnosis.
 
 ---
 
@@ -89,12 +121,12 @@ Without challenge, an insight cannot become wisdom.
 
 ## Repository Structure
 
-- framework/ - Framework definitions, terminology, change history
-- research/ - Prior art, research notes, references
-- cases/ - Worked examples and validation exercises
-- articles/ - Draft articles and publications
-- paper/ - Whitepaper and formal publication drafts
-- diagrams/ - Visual models and supporting graphics
+- `framework/` - Framework definitions, terminology, change history
+- `research/` - Prior art, research notes, references
+- `cases/` - Worked examples and validation exercises
+- `articles/` - Draft articles and publications
+- `paper/` - Whitepaper and formal publication drafts
+- `diagrams/` - Visual models and supporting graphics
 
 ---
 
@@ -104,6 +136,9 @@ Without challenge, an insight cannot become wisdom.
 - Evidence-grounded reasoning
 - Root cause analysis
 - Retrieval-augmented diagnosis
+- Evidence preparation
+- Cold and guided analysis
+- Anchoring risk in AI-assisted diagnosis
 - Decision intelligence
 - Human-in-the-loop systems
 - Reducing AI hallucination in operational workflows
@@ -123,6 +158,8 @@ Particular interest exists in:
 - Case studies
 - Failure modes
 - Validation approaches
+- Evidence extraction approaches
+- Examples where guided analysis caused anchoring bias
 
 ---
 
