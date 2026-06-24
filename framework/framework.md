@@ -1,7 +1,7 @@
 # Evidence-Grounded AI Troubleshooting Framework
 
 **Working acronym:** EGATF  
-**Status:** Draft v0.3  
+**Status:** Draft v0.4  
 **Document type:** Canonical framework definition  
 **Repository path:** `framework/framework.md`
 
@@ -11,21 +11,7 @@
 
 The Evidence-Grounded AI Troubleshooting Framework is a proposed methodology for using AI to assist with technical diagnosis while preserving a clear evidence chain from raw observations to final decisions.
 
-The framework is intended for situations where engineers need to reason across complex technical material such as:
-
-- Support bundles
-- Application logs
-- System logs
-- Metrics
-- Traces
-- Core dumps
-- Database dumps
-- Source code
-- Product documentation
-- Bug reports
-- Ticket summaries
-- Customer observations
-- Historical incidents
+The framework is intended for situations where engineers need to reason across complex technical material such as support bundles, logs, metrics, traces, dumps, source code, documentation, bug reports, ticket summaries, customer observations, and historical incidents.
 
 The purpose is not to make AI the final decision maker.
 
@@ -66,6 +52,7 @@ This means:
 - No conclusion should be accepted until it has been challenged.
 - No action should be taken solely because an explanation sounds plausible.
 - Reported context should guide investigation, not replace verification.
+- Collection context should describe scope, timing, version, source meaning, and limitations.
 - Prepared evidence should preserve provenance back to raw source material.
 - Evidence preparation should reduce noise without introducing unsupported diagnosis.
 
@@ -74,6 +61,10 @@ In short:
 > Without evidence, an insight is speculation.  
 > Without traceability, an insight cannot be trusted.  
 > Without challenge, an insight cannot become wisdom.
+
+Collection-context principle:
+
+> Evidence packages should describe their own collection context. AI should not be asked to infer timing, scope, source meaning, or collection limitations from raw files alone.
 
 ---
 
@@ -111,25 +102,12 @@ The stage most likely to change is **Wisdom**. The stage currently believed to b
 
 ## 6. Evidence Stage Refinement
 
-The first major refinement to EGATF is that **Evidence** is not a single simple thing.
-
-At the beginning of a support investigation there may be:
-
-- A customer ticket summary
-- A first responder description
-- An alert title
-- An error message
-- A support bundle
-- Live access to logs or metrics
-- A snapshot of command output
-- A set of observations from an engineer
-
-These inputs have different levels of reliability.
-
-For that reason, the Evidence stage is treated as a set of sub-stages:
+The Evidence stage is treated as a set of sub-stages:
 
 ```text
 Reported Context
+    ↓
+Collection Context
     ↓
 Raw Source Material
     ↓
@@ -186,7 +164,122 @@ Rule:
 
 ---
 
-## 8. Cold and Guided Analysis
+## 8. Collection Context
+
+Collection Context describes how an evidence package was created and how its contents should be interpreted.
+
+In support-bundle analysis, the support bundle is not just a bag of files. It is a time-bounded evidence package created by a particular collector version, from a particular environment, with different data sources captured from different effective times.
+
+Collection Context answers:
+
+> What was collected, when was it collected, from what environment, using which collector, and what does each source represent?
+
+Examples:
+
+- Support bundle version
+- Support bundle schema version
+- Bundle creation time
+- Requested bundle collection window
+- Actual collection windows per component
+- Universe name and UUID
+- Universe YBDB version at collection time
+- YBA instance and YBA version at collection time
+- Replication factor and node counts
+- Deployment type
+- Infrastructure type
+- Provider
+- Node Agent enabled state
+- Metric collection level
+- Metric collection duration and resolution
+- Included components
+- Component descriptions
+- File index
+- Known gaps or limitations
+
+Collection Context should distinguish between:
+
+- Data representing the requested support bundle duration
+- Data representing bundle creation time
+- Data using a different metrics-specific duration
+- Mixed data sources
+
+Example:
+
+```text
+Logs:
+Represent the requested support bundle duration.
+
+Metrics:
+May represent a metrics-specific duration and resolution.
+
+Tablet metadata:
+Represents collection-time snapshot.
+
+Consensus metadata:
+Represents collection-time snapshot.
+
+Tablet report:
+Represents collection-time snapshot.
+
+YBA metadata:
+May be mixed. Some values represent current YBA state at collection time.
+```
+
+This distinction is critical because AI may otherwise correlate material from incompatible time windows.
+
+Example risk:
+
+```text
+Support bundle created at T.
+
+Logs collected for T - 7 days to T - 5 days.
+
+Tablet report collected at T.
+
+Incorrect conclusion:
+Tablet state at T explains log events from T - 7 to T - 5.
+
+Correct handling:
+Tablet report is collection-time evidence and may not represent the tablet state during the log window.
+```
+
+Rule:
+
+> Collection Context is part of the evidence chain. It is not diagnosis, but it constrains how evidence may safely be interpreted.
+
+---
+
+## 9. Evidence Package Manifest
+
+An Evidence Package Manifest is a machine-readable description of a collected evidence package.
+
+For support bundles, this may be implemented as an expanded `manifest.json`, or as a combination of:
+
+```text
+manifest.json
+bundle_context.json
+file_index.json
+```
+
+The manifest should help humans, deterministic tools, and AI understand:
+
+- What was collected
+- When each component was collected
+- Which system versions are represented
+- Which collection software produced the bundle
+- What each component means
+- Which files and directories are present
+- Which evidence sources reflect the requested time window
+- Which evidence sources reflect collection time
+- Which evidence sources have known limitations
+
+The manifest should not attempt to diagnose the issue.
+
+It should describe the evidence package, not explain the root cause.
+
+---
+
+## 10. Cold and Guided Analysis
 
 EGATF distinguishes between cold analysis and guided analysis.
 
@@ -201,12 +294,6 @@ Purpose:
 - Avoid overfitting to the ticket description
 - Establish independent observations
 
-Example instruction to AI:
-
-```text
-Review the provided material without assuming the reported cause is correct. Identify notable events, anomalies, timelines, and correlations. Do not diagnose yet.
-```
-
 ### Guided Analysis
 
 Guided analysis uses reported context to direct search and extraction.
@@ -217,12 +304,6 @@ Purpose:
 - Search for reported error messages
 - Prioritize affected components
 - Validate or reject the customer-reported pattern
-
-Example instruction to AI:
-
-```text
-Use the reported context as search guidance only. Treat all reported causal claims as unverified hypotheses. Verify each claim against raw source material or prepared evidence before using it as evidence.
-```
 
 Recommended workflow:
 
@@ -236,11 +317,9 @@ Compare findings
 Record agreements, differences, and surprises
 ```
 
-This helps separate what the material shows from what the initial report suggested.
-
 ---
 
-## 9. Raw Source Material
+## 11. Raw Source Material
 
 Raw source material is the untouched diagnostic material available to the investigation.
 
@@ -266,11 +345,11 @@ It is the material from which an evidence base may be prepared.
 
 ---
 
-## 10. Evidence Preparation
+## 12. Evidence Preparation
 
 Evidence Preparation is the process of making raw source material easier to inspect, query, compare, and reason about while preserving provenance.
 
-Evidence Preparation is a broad activity. It includes several different operations:
+Evidence Preparation is a broad activity. It includes:
 
 ```text
 Collection
@@ -283,19 +362,9 @@ Derivation
 Correlation
 ```
 
-These operations should not be collapsed into one term because they have different meanings and produce different kinds of output.
-
-### 10.1 Collection
+### Collection
 
 Collection gathers raw source material.
-
-Examples:
-
-- Collect support bundle
-- Collect logs
-- Export metrics
-- Capture configuration
-- Collect Kubernetes events
 
 Output:
 
@@ -303,7 +372,7 @@ Output:
 Raw Source Material
 ```
 
-### 10.2 Transformation
+### Transformation
 
 Transformation changes the shape or storage format of source material without deciding what matters.
 
@@ -321,14 +390,6 @@ Output:
 Structured Source Material
 ```
 
-Example:
-
-```text
-tserver.log
-    ↓ Source Transformer
-logs.parquet
-```
-
 A log structuring tool such as `wtl`, which converts tserver, master, and YBA logs into parquet columns without filtering or consolidation, is best classified as:
 
 ```text
@@ -337,7 +398,7 @@ Source Transformer / Log Structuring Tool
 
 It does not primarily produce Extracted Evidence. It produces Structured Source Material that can later be queried.
 
-### 10.3 Parsing
+### Parsing
 
 Parsing reads a specific source format and identifies fields.
 
@@ -349,13 +410,7 @@ Examples:
 
 Parsing often supports transformation, extraction, or both.
 
-Output:
-
-```text
-Parsed Source Material
-```
-
-### 10.4 Normalization
+### Normalization
 
 Normalization makes values consistent across sources.
 
@@ -368,13 +423,7 @@ Examples:
 - Normalize component names
 - Normalize units
 
-Output:
-
-```text
-Normalized Source Material
-```
-
-### 10.5 Indexing
+### Indexing
 
 Indexing makes prepared material searchable or queryable.
 
@@ -385,13 +434,7 @@ Examples:
 - Build search index over log messages
 - Partition parquet files by time or component
 
-Output:
-
-```text
-Indexed Source Material
-```
-
-### 10.6 Extraction
+### Extraction
 
 Extraction selects or identifies observations that may matter to an investigation.
 
@@ -410,11 +453,7 @@ Output:
 Extracted Evidence
 ```
 
-Extraction answers:
-
-> What notable observations can be pulled out of the prepared material?
-
-### 10.7 Derivation
+### Derivation
 
 Derivation computes higher-level observations from lower-level source material or extracted evidence.
 
@@ -433,10 +472,6 @@ Output:
 Derived Evidence
 ```
 
-Derivation answers:
-
-> What computed observation follows from the available evidence?
-
 A tablet report parser that both structures a raw tablet report and identifies leaderless, over-replicated, or under-replicated tables is a hybrid tool:
 
 ```text
@@ -445,7 +480,7 @@ Source Transformer + Derived Evidence Generator
 
 Conceptually, its outputs should distinguish direct structured source tables from derived evidence or findings.
 
-### 10.8 Correlation
+### Correlation
 
 Correlation compares evidence across time, components, nodes, or sources.
 
@@ -463,15 +498,9 @@ Output:
 Correlated Evidence
 ```
 
-Correlation answers:
-
-> What relationships exist between observations?
-
 ---
 
-## 11. Boundary Rules
-
-The following boundary rules help classify tools and outputs.
+## 13. Boundary Rules
 
 ### Rule 1: Transformation changes shape
 
@@ -479,59 +508,21 @@ Transformation changes the format or structure of source material.
 
 It does not decide what matters.
 
-Example:
-
-```text
-raw logs
-    ↓
-parquet tables
-```
-
 ### Rule 2: Extraction selects observations
 
-Extraction identifies notable observations from source material or structured source material.
-
-Example:
-
-```text
-logs.parquet
-    ↓
-restart events
-```
+Extraction identifies notable observations from raw or structured material.
 
 ### Rule 3: Derivation computes new observations
 
 Derivation computes a higher-level observation from lower-level facts.
 
-Example:
-
-```text
-tablet peers and roles
-    ↓
-tablet is leaderless
-```
-
 ### Rule 4: Correlation compares observations
 
 Correlation identifies relationships across observations.
 
-Example:
-
-```text
-restart event + memory pressure metric
-    ↓
-memory pressure preceded restart by 3 minutes
-```
-
 ### Rule 5: Information explains context
 
 Information places evidence into a meaningful narrative, timeline, comparison, or relationship.
-
-Example:
-
-```text
-The reported error appears in the logs, but only after the first tserver restart.
-```
 
 Short version:
 
@@ -545,9 +536,7 @@ Information explains relationships.
 
 ---
 
-## 12. Tooling Taxonomy
-
-EGATF distinguishes between several types of scripts and tools.
+## 14. Tooling Taxonomy
 
 | Tool Type | Purpose | Example |
 |---|---|---|
@@ -567,15 +556,16 @@ Rule:
 
 ---
 
-## 13. Stage Definitions
+## 15. Stage Definitions
 
-### 13.1 Evidence
+### Evidence
 
 Evidence is observable or authoritative material that can support or challenge a claim.
 
-In v0.3, Evidence includes:
+In v0.4, Evidence includes:
 
 - Reported context
+- Collection context
 - Raw source material
 - Structured source material
 - Extracted evidence
@@ -586,8 +576,6 @@ Evidence answers:
 
 > What was observed, reported, collected, structured, extracted, derived, or correlated?
 
-Evidence should be captured with enough context to be independently reviewed.
-
 Useful metadata includes:
 
 - Source
@@ -595,13 +583,14 @@ Useful metadata includes:
 - System or component
 - Version
 - Collection method
+- Collection window
 - Preparation method
 - Extraction method
 - Derivation logic
 - Confidence in source reliability
-- Whether the evidence is reported, direct, indirect, structured, extracted, derived, or correlated
+- Whether the evidence is reported, collection context, direct, indirect, structured, extracted, derived, or correlated
 
-### 13.2 Information
+### Information
 
 Information is evidence that has been structured into meaningful observations, timelines, comparisons, or relationships.
 
@@ -611,8 +600,7 @@ Examples:
 - Memory usage reached 98 percent before the service restarted.
 - Leader movement began 17 seconds after disk latency increased.
 - The same error appears on three nodes, but not on the fourth.
-- The failing code path is only used when a specific feature flag is enabled.
-- The reported error message appears in logs, but outside the reported time window.
+- Tablet metadata is not valid evidence for the requested log window because it was collected later at bundle creation time.
 
 Information answers:
 
@@ -622,7 +610,7 @@ Information must remain linked to the evidence it was derived from.
 
 Information can include interpretation, but should stop short of root cause diagnosis.
 
-### 13.3 Knowledge
+### Knowledge
 
 Knowledge is contextual understanding derived from trusted sources.
 
@@ -636,24 +624,13 @@ Examples:
 - Operational runbooks
 - Domain expertise
 
-Knowledge explains how evidence and information may relate.
-
 Knowledge answers:
 
 > How does this system behave?
 
-Knowledge must also be grounded. The source of knowledge should be recorded wherever possible.
-
-### 13.4 Insight
+### Insight
 
 Insight is a candidate explanation produced by combining evidence, information, and knowledge.
-
-Examples:
-
-- The restart was likely caused by memory pressure.
-- The customer-visible timeout appears to be downstream of leader instability.
-- The increased write latency may be caused by compaction backlog.
-- The observed CDC lag is more consistent with idle-table checkpoint behavior than network failure.
 
 An insight is not yet a conclusion.
 
@@ -663,11 +640,9 @@ Insight answers:
 
 > What might this mean?
 
-### 13.5 Challenge
+### Challenge
 
 Challenge is the deliberate attempt to test, weaken, disprove, or qualify an insight.
-
-This is the defining stage of the framework.
 
 Challenge questions include:
 
@@ -677,29 +652,15 @@ Challenge questions include:
 - What assumptions does this insight depend on?
 - Are there alternative explanations?
 - Did the timeline happen in the required order?
-- Is the cited documentation relevant to this version?
-- Does the source code support this interpretation?
-- Could the same symptoms be caused by something else?
-- Did guided analysis anchor the investigation too strongly?
-- Did cold analysis find anomalies that guided analysis missed?
 - Did evidence preparation tools hide, drop, or misclassify relevant material?
-- What would we expect to see if this insight were true?
-- What would we expect to see if this insight were false?
+- Did AI confuse collection-time evidence with duration-based evidence?
+- Did AI use tablet metadata, consensus metadata, or tablet reports outside their valid time context?
 
 Challenge answers:
 
 > Why might this explanation be wrong?
 
-A useful challenge stage should produce one of several outcomes:
-
-- Insight strengthened
-- Insight weakened
-- Insight rejected
-- Insight split into multiple hypotheses
-- More evidence required
-- Alternative explanation preferred
-
-### 13.6 Wisdom
+### Wisdom
 
 Wisdom is the current best human judgment after evidence, information, knowledge, insight, and challenge have been considered.
 
@@ -707,112 +668,45 @@ This stage is intentionally tentative.
 
 Wisdom may eventually be renamed or removed.
 
-For now, wisdom represents the transition from AI-assisted reasoning to responsible human judgment.
-
 Wisdom answers:
 
 > What should we believe, given the evidence and uncertainty?
 
-Wisdom should include:
-
-- Confidence level
-- Remaining uncertainty
-- Known assumptions
-- Risk of being wrong
-- Consequences of action
-- Whether more evidence is required
-
-### 13.7 Decision
+### Decision
 
 Decision is the selection of a response based on the current best judgment.
-
-Examples:
-
-- Collect more logs.
-- Escalate to engineering.
-- Apply a known workaround.
-- Change configuration.
-- Roll back a release.
-- Open a bug.
-- Communicate a suspected cause to a customer.
-- Take no immediate action and continue observing.
 
 Decision answers:
 
 > What will we do next?
 
-A decision should be linked to the insight or judgment that justified it.
-
-### 13.8 Action
+### Action
 
 Action is the execution of the decision.
-
-Examples:
-
-- Restarting a service
-- Applying a patch
-- Changing a timeout
-- Running a diagnostic command
-- Capturing a core dump
-- Enabling additional logging
-- Opening a pull request
-- Updating a runbook
-- Communicating to stakeholders
 
 Action answers:
 
 > What did we actually do?
 
-Actions should be recorded because later outcome analysis depends on knowing what changed.
-
-### 13.9 Outcome
+### Outcome
 
 Outcome is the measured result of an action.
-
-Examples:
-
-- Error rate decreased.
-- Latency returned to baseline.
-- The issue reproduced again.
-- The workaround failed.
-- The customer impact stopped.
-- A new failure mode appeared.
-- The hypothesis was disproven.
 
 Outcome answers:
 
 > Did it work?
 
-Outcome should feed back into the evidence base.
-
-A failed action is not wasted effort if it improves the evidence chain.
-
-### 13.10 Learning
+### Learning
 
 Learning is the capture of reusable knowledge from the investigation.
-
-Examples:
-
-- Knowledge base article
-- Runbook update
-- Bug report
-- Test case
-- Monitoring rule
-- Alert improvement
-- Documentation correction
-- Source code comment
-- Training example
-- Case study
 
 Learning answers:
 
 > What should future investigations know?
 
-Learning closes the loop by turning one investigation into improved future diagnosis.
-
 ---
 
-## 14. Evidence Chain Requirements
+## 16. Evidence Chain Requirements
 
 For an EGATF investigation to be considered evidence-grounded, it should be possible to trace backward from any decision to the evidence that supported it.
 
@@ -832,6 +726,8 @@ Prepared Evidence Base
 Evidence Preparation
     ↓ applied to
 Raw Source Material
+    ↓ described by
+Collection Context
     ↓ optionally guided by
 Reported Context
 ```
@@ -839,7 +735,9 @@ Reported Context
 A well-formed evidence chain should show:
 
 - Which reported context was used
+- Which collection context constrained interpretation
 - Which raw source material was available
+- Which collection windows applied
 - Which preparation methods were applied
 - Which tools were used
 - Which outputs were structured source material
@@ -857,7 +755,7 @@ A well-formed evidence chain should show:
 
 ---
 
-## 15. AI Roles in the Framework
+## 17. AI Roles in the Framework
 
 AI may assist at multiple stages, but should not be treated as equally reliable at every stage.
 
@@ -870,6 +768,17 @@ Risk:
 - Treating reported cause as verified truth
 - Anchoring on customer wording
 - Missing ambiguity in the report
+
+### Collection Context
+
+AI can use the manifest to understand scope, timing, component meaning, versions, collection windows, and known limitations.
+
+Risk:
+
+- Ignoring collection windows
+- Confusing requested log duration with collection-time snapshots
+- Treating absent components as absent problems without checking collection scope
+- Mixing YBA version and YBDB version
 
 ### Raw Source Material
 
@@ -973,7 +882,7 @@ Risk:
 
 ---
 
-## 16. Intended Use Cases
+## 18. Intended Use Cases
 
 EGATF is intended for complex technical diagnosis where evidence quality matters.
 
@@ -993,7 +902,7 @@ Possible use cases include:
 
 ---
 
-## 17. Non-Goals
+## 19. Non-Goals
 
 EGATF is not intended to be:
 
@@ -1006,37 +915,40 @@ EGATF is not intended to be:
 - A reason to trust customer-reported cause without verification
 - A reason to trust prepared data without provenance
 - A reason to treat derived evidence as direct evidence
+- A reason to ignore collection windows or component-specific timing
 
 The framework is intended to improve reasoning discipline, not remove human responsibility.
 
 ---
 
-## 18. Open Questions
-
-The framework is still experimental. Current open questions include:
+## 20. Open Questions
 
 1. Should **Wisdom** remain as a distinct stage?
 2. Should **Challenge** be renamed to Validation, Adversarial Review, or Pressure Test?
 3. Should Evidence and Information remain top-level stages, with sub-stages inside Evidence?
-4. Should Evidence Preparation become a top-level framework stage?
-5. How should confidence be represented?
-6. How should reported context be scored?
-7. How should contradictory evidence be tracked?
-8. What metadata is required for a useful evidence item?
-9. Can the framework be applied consistently across different technical domains?
-10. Does the Challenge stage measurably improve outcomes?
-11. How should case studies be anonymized and sanitized?
-12. What is the smallest useful tool that could support the workflow?
-13. How should extractor quality be tested?
-14. How should cold and guided analysis findings be compared?
-15. How should anchoring risk be represented?
-16. How should Source Transformer output be distinguished from Extracted Evidence?
-17. Should Derived Evidence have a formal confidence model?
-18. Should hybrid tools expose separate output layers?
+4. Should Collection Context become a top-level framework stage?
+5. Should Evidence Preparation become a top-level framework stage?
+6. How should confidence be represented?
+7. How should reported context be scored?
+8. How should contradictory evidence be tracked?
+9. What metadata is required for a useful evidence item?
+10. Can the framework be applied consistently across different technical domains?
+11. Does the Challenge stage measurably improve outcomes?
+12. How should case studies be anonymized and sanitized?
+13. What is the smallest useful tool that could support the workflow?
+14. How should extractor quality be tested?
+15. How should cold and guided analysis findings be compared?
+16. How should anchoring risk be represented?
+17. How should Source Transformer output be distinguished from Extracted Evidence?
+18. Should Derived Evidence have a formal confidence model?
+19. Should hybrid tools expose separate output layers?
+20. Should support bundle manifests include AI-friendly content descriptions?
+21. Should support bundle manifests include component-specific collection window semantics?
+22. Should support bundle manifests include schema versions for parser compatibility?
 
 ---
 
-## 19. Success Criteria
+## 21. Success Criteria
 
 The framework will be considered useful if it helps practitioners:
 
@@ -1049,10 +961,13 @@ The framework will be considered useful if it helps practitioners:
 - Convert investigations into reusable learning
 - Improve collaboration between humans and AI during diagnosis
 - Separate reported context from verified evidence
+- Separate collection context from raw source material
 - Reduce anchoring bias from guided statements
 - Produce cleaner evidence for AI analysis without losing provenance
 - Distinguish transformation from extraction
 - Distinguish extracted evidence from derived evidence
+- Avoid false correlations across incompatible collection windows
+- Help deterministic tools select appropriate parsers based on support bundle schema version
 
 The most important validation question is:
 
@@ -1066,9 +981,13 @@ A third validation question is:
 
 > Does classifying preparation tools by function reduce confusion and prevent prepared data from being mistaken for diagnosis?
 
+A fourth validation question is:
+
+> Does explicit collection context reduce AI errors caused by time-window confusion, version confusion, or misunderstanding of support bundle contents?
+
 ---
 
-## 20. Current Status
+## 22. Current Status
 
 This document is an early draft.
 

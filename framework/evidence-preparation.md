@@ -1,7 +1,7 @@
 # Evidence Preparation
 
 **Document type:** Framework detail  
-**Status:** Draft v0.3  
+**Status:** Draft v0.4  
 **Repository path:** `framework/evidence-preparation.md`
 
 ---
@@ -33,6 +33,8 @@ It should not silently convert assumptions into facts.
 ```text
 Reported Context
     ↓
+Collection Context
+    ↓
 Raw Source Material
     ↓
 Evidence Preparation
@@ -55,6 +57,33 @@ Derivation
 Correlation
 ```
 
+Collection Context should be consulted before preparation because it describes what was collected, which component windows apply, which versions generated the evidence package, and which files are expected to exist.
+
+---
+
+## Collection Context Dependency
+
+Evidence Preparation tools should use Collection Context when available.
+
+Examples:
+
+- Use support bundle schema version to choose parser logic.
+- Use YBDB version to select version-aware parsing behavior.
+- Use YBA version to understand support bundle format.
+- Use component list to determine expected files.
+- Use file index to validate presence or absence of directories.
+- Use collection windows to avoid correlating incompatible evidence.
+- Use metric collection settings to explain why some metrics are absent or low resolution.
+
+Collection Context should help preparation tools distinguish:
+
+```text
+missing because not collected
+missing because unsupported
+missing because collection failed
+missing because no data existed
+```
+
 ---
 
 ## Outputs
@@ -75,31 +104,6 @@ Correlated Evidence
 These are not all the same.
 
 A key EGATF discipline is to label outputs accurately.
-
----
-
-## Collection
-
-Collection gathers raw source material.
-
-Examples:
-
-- Collect support bundle
-- Collect logs
-- Export metrics
-- Capture configuration
-- Collect Kubernetes events
-- Capture command output
-
-Collection produces:
-
-```text
-Raw Source Material
-```
-
-Collection answers:
-
-> What raw material is available?
 
 ---
 
@@ -138,78 +142,6 @@ Source Transformer / Log Structuring Tool
 because it converts log lines into structured parquet records without filtering, consolidating, or interpreting them.
 
 This is not primarily extraction.
-
----
-
-## Parsing
-
-Parsing reads a specific source format and identifies fields.
-
-Examples:
-
-- Parse timestamp, severity, component, file, line, and message from a log line
-- Parse tablet ID, table ID, peer, role, and state from a tablet report
-- Parse metric name, labels, timestamp, and value from a metrics export
-
-Parsing may support transformation, extraction, or derivation.
-
-Parsing produces:
-
-```text
-Parsed Source Material
-```
-
-Parsing answers:
-
-> What fields are present in this source format?
-
----
-
-## Normalization
-
-Normalization makes values consistent across sources.
-
-Examples:
-
-- Normalize timestamps to UTC
-- Normalize hostnames
-- Normalize node names
-- Normalize log severity
-- Normalize component names
-- Normalize units
-
-Normalization produces:
-
-```text
-Normalized Source Material
-```
-
-Normalization answers:
-
-> How do we make values comparable across sources?
-
----
-
-## Indexing
-
-Indexing makes prepared material searchable or queryable.
-
-Examples:
-
-- Load logs into DuckDB
-- Create SQLite indexes
-- Build search indexes
-- Partition parquet files by time or component
-
-Indexing produces:
-
-```text
-Indexed Source Material
-```
-
-Indexing answers:
-
-> How do we make prepared material efficient to query?
 
 ---
 
@@ -256,10 +188,6 @@ Derivation produces:
 Derived Evidence
 ```
 
-Derivation answers:
-
-> What computed observation follows from the available evidence?
-
 Derived evidence should record:
 
 - Inputs used
@@ -267,6 +195,7 @@ Derived evidence should record:
 - Output produced
 - Confidence or limitations
 - Link back to source material
+- Whether inputs represent requested duration or collection-time snapshot
 
 ---
 
@@ -287,9 +216,9 @@ Correlation produces:
 Correlated Evidence
 ```
 
-Correlation answers:
+Correlation should be collection-window aware.
 
-> What relationships exist between observations?
+For example, collection-time tablet metadata should not be correlated with a historical log event as if both represented the same time window.
 
 ---
 
@@ -388,36 +317,6 @@ The same binary may perform all of these functions, but the outputs should ident
 
 ---
 
-## Should Hybrid Tools Be Split?
-
-Conceptually, yes.
-
-Physically, not always.
-
-It is acceptable for one tool to perform multiple roles if its outputs are clearly separated.
-
-Good:
-
-```text
-tablet-report-parser
-    produces source tables
-    produces derived evidence tables
-    produces findings tables
-```
-
-Risky:
-
-```text
-tablet-report-parser
-    produces one mixed output where raw fields, derived states, and findings are not distinguishable
-```
-
-The framework does not require every tool to be split into separate binaries.
-
-It does require that the evidence chain remains clear.
-
----
-
 ## Boundary Rules
 
 ### Transformation changes shape
@@ -467,6 +366,8 @@ A safe AI-assisted diagnostic workflow should not always begin by sending raw bu
 A safer pattern is:
 
 ```text
+Collection Context
+    ↓
 Raw Source Material
     ↓
 Deterministic Evidence Preparation
@@ -489,22 +390,8 @@ This improves the workflow because:
 - Deterministic tools can be tested.
 - Derived evidence can be reviewed.
 - AI can spend more effort reasoning and less effort parsing.
+- AI can avoid false correlations across incompatible time windows.
 
 The safety rule is:
 
-> Use deterministic tools to prepare evidence where possible. Use AI to reason over prepared evidence, but require traceability back to raw source material.
-
----
-
-## Open Questions
-
-1. Should Evidence Preparation become a top-level EGATF stage?
-2. Should every preparation tool declare its role?
-3. Should outputs use standard names such as `structured_source`, `extracted_evidence`, and `derived_evidence`?
-4. Should derived evidence include machine-readable derivation metadata?
-5. How should hybrid tools expose their output layers?
-6. How should extractor precision and recall be tested?
-7. Should EGATF define a minimal evidence schema?
-8. Should source transformation outputs be considered evidence or prepared source material?
-9. How should AI be told which prepared evidence is direct, extracted, derived, or correlated?
-10. What level of preparation is enough before AI analysis begins?
+> Use deterministic tools to prepare evidence where possible. Use AI to reason over prepared evidence, but require traceability back to raw source material and collection context.

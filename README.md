@@ -86,6 +86,8 @@ The Evidence stage contains several distinct sub-stages:
 ```text
 Reported Context
     ↓
+Collection Context
+    ↓
 Raw Source Material
     ↓
 Evidence Preparation
@@ -94,6 +96,45 @@ Prepared Evidence Base
     ↓
 Information
 ```
+
+### Reported Context
+
+Reported Context is the unvalidated problem description.
+
+Examples:
+
+- Ticket summary
+- Customer statement
+- Alert description
+- Reported error message
+- First responder notes
+
+Reported Context is useful guidance, but not ground truth.
+
+### Collection Context
+
+Collection Context describes how the evidence package was created and how its contents should be interpreted.
+
+Examples:
+
+- Support bundle version
+- Support bundle schema version
+- Bundle creation time
+- Requested collection duration
+- Per-component collection windows
+- Universe and YBA identity
+- YBDB and YBA versions
+- Deployment type
+- Metric collection settings
+- Included component descriptions
+- File index
+- Known collection limitations
+
+Collection Context is critical because not all files in a support bundle represent the same time period.
+
+For example, logs may represent the requested support bundle duration, while tablet metadata, consensus metadata, and tablet reports may represent collection time.
+
+### Evidence Preparation
 
 Evidence Preparation is itself a broad activity. It includes:
 
@@ -110,7 +151,7 @@ Correlation
 
 This distinction is important because not every preparation tool extracts evidence.
 
-For example, a tool that converts log lines into columns and writes parquet files is primarily a **Source Transformer** or **Log Structuring Tool**. It produces **Structured Source Material**. It does not necessarily extract notable evidence.
+A tool that converts log lines into columns and writes parquet files is primarily a **Source Transformer** or **Log Structuring Tool**. It produces **Structured Source Material**. It does not necessarily extract notable evidence.
 
 A tool that identifies leaderless tablets or under-replicated tables is performing **Derivation** and producing **Derived Evidence**.
 
@@ -130,6 +171,10 @@ Additional evidence-preparation principle:
 
 > Use deterministic preparation tools where possible to reduce noise, preserve provenance, and give AI cleaner evidence to reason over.
 
+Additional collection-context principle:
+
+> Evidence packages should describe their own collection context. AI should not be asked to infer timing, scope, source meaning, or collection limitations from raw files alone.
+
 ---
 
 ## Repository Structure
@@ -140,6 +185,7 @@ Additional evidence-preparation principle:
 - `articles/` - Draft articles and publications
 - `paper/` - Whitepaper and formal publication drafts
 - `diagrams/` - Visual models and supporting graphics
+- `engineering/` - Engineering feature requests and related implementation notes
 
 ---
 
@@ -149,6 +195,9 @@ Additional evidence-preparation principle:
 - Evidence-grounded reasoning
 - Root cause analysis
 - Retrieval-augmented diagnosis
+- Collection context
+- Evidence package manifests
+- Support bundle metadata
 - Evidence preparation
 - Source transformation
 - Evidence extraction
@@ -176,6 +225,8 @@ Particular interest exists in:
 - Validation approaches
 - Evidence extraction approaches
 - Evidence preparation tooling
+- Collection context models
+- Examples where missing collection context caused incorrect analysis
 - Examples where guided analysis caused anchoring bias
 
 ---
