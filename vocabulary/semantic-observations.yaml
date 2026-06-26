@@ -1,0 +1,141 @@
+schema_version: "0.1"
+kind: semantic_observation_vocabulary
+status: draft
+
+purpose: >
+  Stable semantic observation names used by EGATF Diagnostic Knowledge Patterns.
+  These names should remain stable even when support bundle formats, log formats,
+  or extraction tools change.
+
+observation_kinds:
+  client.timeout_increase:
+    description: Client-visible timeout rate or timeout frequency increased.
+    possible_sources:
+      - client_logs
+      - ysql_logs
+      - ycql_logs
+      - application_logs
+      - metrics
+    evidence_classes:
+      - extracted_evidence
+      - correlated_evidence
+
+  client.latency_increase:
+    description: Client-visible latency increased above baseline or expected range.
+    possible_sources:
+      - client_logs
+      - ysql_logs
+      - ycql_logs
+      - application_logs
+      - metrics
+    evidence_classes:
+      - extracted_evidence
+      - correlated_evidence
+
+  raft.leader_instability:
+    description: Raft leadership changed, was unavailable, or was repeatedly contested for relevant tablets or groups.
+    possible_sources:
+      - master_logs
+      - tserver_logs
+      - consensus_meta
+      - tablet_report
+      - derived_evidence
+    evidence_classes:
+      - extracted_evidence
+      - derived_evidence
+      - correlated_evidence
+
+  raft.no_leader_observed:
+    description: A tablet or raft group was observed without a leader.
+    possible_sources:
+      - master_logs
+      - tserver_logs
+      - tablet_report
+      - consensus_meta
+    evidence_classes:
+      - extracted_evidence
+      - derived_evidence
+
+  tablet.leaderless:
+    description: A tablet is computed or observed to have no current leader.
+    possible_sources:
+      - tablet_report
+      - consensus_meta
+      - master_metadata
+      - derived_evidence
+    evidence_classes:
+      - derived_evidence
+    timing_warning: >
+      Tablet report and consensus metadata may be collection-time snapshots and should
+      not automatically be used as evidence for a historical impact window.
+
+  tablet.under_replicated:
+    description: A tablet has fewer live or valid replicas than expected for the replication factor.
+    possible_sources:
+      - tablet_report
+      - master_metadata
+      - derived_evidence
+    evidence_classes:
+      - derived_evidence
+
+  tablet.over_replicated:
+    description: A tablet has more replicas than expected for the replication factor.
+    possible_sources:
+      - tablet_report
+      - master_metadata
+      - derived_evidence
+    evidence_classes:
+      - derived_evidence
+
+  node.disk_latency_increase:
+    description: Disk latency increased on one or more nodes.
+    possible_sources:
+      - node_metrics
+      - prometheus_metrics
+      - iostat_output
+      - node_exporter
+    evidence_classes:
+      - extracted_evidence
+      - correlated_evidence
+
+  node.cpu_saturation:
+    description: CPU usage was saturated or near saturation on one or more nodes.
+    possible_sources:
+      - node_metrics
+      - prometheus_metrics
+      - node_exporter
+      - top_output
+    evidence_classes:
+      - extracted_evidence
+      - correlated_evidence
+
+  process.restart_observed:
+    description: A process restart was observed.
+    possible_sources:
+      - service_logs
+      - system_logs
+      - kubernetes_events
+      - process_lifecycle_output
+    evidence_classes:
+      - extracted_evidence
+
+  metrics.coverage_gap:
+    description: Metrics expected for an investigation are absent, incomplete, low-resolution, or outside the required time window.
+    possible_sources:
+      - manifest
+      - collection_context
+      - prometheus_export
+      - metrics_index
+    evidence_classes:
+      - collection_context
+      - derived_evidence
+
+  knowledge.version_mismatch:
+    description: A reference knowledge source does not apply cleanly to the collected product version or deployment context.
+    possible_sources:
+      - documentation_metadata
+      - source_code_version
+      - release_notes
+      - known_issue_database
+    evidence_classes:
+      - knowledge_validation

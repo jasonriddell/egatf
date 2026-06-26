@@ -1,0 +1,187 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$title: "EGATF Diagnostic Knowledge Pattern"
+$type: object
+required:
+  - schema_version
+  - kind
+  - id
+  - title
+  - status
+  - applies_to
+  - summary
+  - evidence_requirements
+  - challenge_questions
+  - confidence_model
+  - outputs
+properties:
+  schema_version:
+    type: string
+    description: Version of this pattern schema.
+  kind:
+    type: string
+    const: diagnostic_knowledge_pattern
+  id:
+    type: string
+    pattern: "^[a-z0-9][a-z0-9_.-]*$"
+  title:
+    type: string
+  status:
+    type: string
+    enum: [draft, reviewed, active, deprecated, retired]
+  owner:
+    type: string
+  last_reviewed:
+    type: [string, "null"]
+    description: ISO date when the pattern was last reviewed.
+  applies_to:
+    type: object
+    required: [product, components]
+    properties:
+      product:
+        type: string
+      components:
+        type: array
+        items:
+          type: string
+      versions:
+        type: object
+        properties:
+          min:
+            type: [string, "null"]
+          max:
+            type: [string, "null"]
+          known_affected:
+            type: array
+            items:
+              type: string
+          known_fixed:
+            type: array
+            items:
+              type: string
+      deployment:
+        type: object
+        properties:
+          type:
+            type: array
+            items:
+              type: string
+          infrastructure:
+            type: array
+            items:
+              type: string
+  summary:
+    type: object
+    required: [one_line, description]
+    properties:
+      one_line:
+        type: string
+      description:
+        type: string
+  reported_context:
+    type: object
+    properties:
+      useful_clues:
+        type: array
+        items:
+          type: string
+      anchoring_warning:
+        type: string
+  evidence_requirements:
+    type: object
+    properties:
+      required:
+        type: array
+        items:
+          $ref: "#/$defs/evidenceRequirement"
+      optional:
+        type: array
+        items:
+          $ref: "#/$defs/evidenceRequirement"
+  contradicting_evidence:
+    type: array
+    items:
+      type: object
+      required: [kind, meaning]
+      properties:
+        kind:
+          type: string
+        meaning:
+          type: string
+  missing_evidence:
+    type: array
+    items:
+      type: object
+      required: [kind, impact]
+      properties:
+        kind:
+          type: string
+        impact:
+          type: string
+  time_relationships:
+    type: array
+    items:
+      type: object
+      properties:
+        subject:
+          type: string
+        relation:
+          type: string
+        object:
+          type: string
+        required:
+          type: boolean
+  knowledge_sources:
+    type: object
+    properties:
+      required_validation:
+        type: array
+        items:
+          type: object
+          required: [type, requirement]
+          properties:
+            type:
+              type: string
+            requirement:
+              type: string
+  challenge_questions:
+    type: array
+    items:
+      type: string
+  confidence_model:
+    type: object
+    properties:
+      high:
+        type: object
+      medium:
+        type: object
+      low:
+        type: object
+      reject:
+        type: object
+  outputs:
+    type: object
+    required: [possible_insight, not_allowed_as_conclusion]
+    properties:
+      possible_insight:
+        type: string
+      not_allowed_as_conclusion:
+        type: string
+$defs:
+  evidenceRequirement:
+    type: object
+    required: [id, kind, evidence_class, source_role, time_relation]
+    properties:
+      id:
+        type: string
+      kind:
+        type: string
+      evidence_class:
+        type: string
+      source_role:
+        type: array
+        items:
+          type: string
+      time_relation:
+        type: string
+      warning:
+        type: string

@@ -1,0 +1,197 @@
+schema_version: "0.1"
+kind: diagnostic_knowledge_pattern
+
+id: ybdb.raft.leader-instability.client-timeouts
+title: Raft leader instability with client-visible timeouts
+status: draft
+owner: egatf
+last_reviewed: null
+
+applies_to:
+  product: yugabytedb
+  components:
+    - yb-master
+    - yb-tserver
+    - raft
+    - ysql
+    - ycql
+  versions:
+    min: null
+    max: null
+    known_affected: []
+    known_fixed: []
+  deployment:
+    type:
+      - vm
+      - k8s
+    infrastructure:
+      - cloud
+      - on_prem
+
+summary:
+  one_line: Client-visible timeouts may be consistent with raft leader instability affecting relevant tablets.
+  description: >
+    This pattern describes investigations where client-visible timeouts correlate
+    with raft leadership instability, leader movement, or leader absence for
+    tablets involved in the affected workload. The pattern must not be used as a
+    conclusion unless time ordering, source compatibility, and version-correct
+    knowledge have been validated.
+
+reported_context:
+  useful_clues:
+    - client timeouts
+    - intermittent write failures
+    - latency increase
+    - leader not available messages
+    - tablet unavailable messages
+  anchoring_warning: >
+    Do not assume raft leadership is the cause only because timeout symptoms are present.
+    Timeout symptoms may also be caused by disk latency, CPU saturation, network issues,
+    client configuration, overloaded queues, or unrelated service failures.
+
+evidence_requirements:
+  required:
+    - id: e1
+      kind: client.timeout_increase
+      evidence_class: extracted_or_correlated
+      source_role:
+        - client_logs
+        - ysql_logs
+        - ycql_logs
+        - application_logs
+        - metrics
+      time_relation: during_impact_window
+
+    - id: e2
+      kind: raft.leader_instability
+      evidence_class: extracted_or_derived
+      source_role:
+        - master_logs
+        - tserver_logs
+        - tablet_report
+        - consensus_meta
+      time_relation: overlaps_or_precedes:e1
+
+  optional:
+    - id: e3
+      kind: tablet.leaderless
+      evidence_class: derived
+      source_role:
+        - tablet_report
+        - consensus_meta
+      time_relation: collection_time_snapshot
+      warning: >
+        If tablet_report or consensus_meta is a collection-time snapshot, do not use it as proof
+        of tablet state during a historical impact window.
+
+    - id: e4
+      kind: tablet.under_replicated
+      evidence_class: derived
+      source_role:
+        - tablet_report
+        - master_metadata
+      time_relation: collection_time_snapshot_or_impact_window
+      warning: >
+        Under-replication from a collection-time report may explain current state but not
+        necessarily historical customer impact.
+
+contradicting_evidence:
+  - kind: stable_leadership_during_impact
+    meaning: >
+      If leadership was stable for relevant tablets during the impact window,
+      this pattern is weakened.
+
+  - kind: timeout_precedes_leader_instability
+    meaning: >
+      If client timeouts clearly began before any leader instability, raft instability
+      may be downstream, unrelated, or only a symptom.
+
+  - kind: stronger_non_raft_explanation
+    meaning: >
+      If disk latency, CPU saturation, network loss, or client-side timeout settings
+      better explain the symptoms, this pattern should not drive Judgment.
+
+missing_evidence:
+  - kind: workload_to_tablet_mapping
+    impact: >
+      Without mapping affected workload to affected tablets, leader instability may be unrelated.
+
+  - kind: time_aligned_tablet_state
+    impact: >
+      Without tablet state from the impact window, collection-time tablet reports cannot prove
+      historical tablet state.
+
+  - kind: version_correct_reference_knowledge
+    impact: >
+      Without validating documentation or source code against the collected YBDB version,
+      product behavior may be misinterpreted.
+
+time_relationships:
+  - subject: raft.leader_instability
+    relation: overlaps_or_precedes
+    object: client.timeout_increase
+    required: true
+
+  - subject: tablet.leaderless
+    relation: must_be_time_compatible_with
+    object: client.timeout_increase
+    required: false
+
+knowledge_sources:
+  required_validation:
+    - type: documentation
+      requirement: Must apply to the collected YBDB version and deployment type.
+    - type: source_code
+      requirement: Must match or be compatible with the collected YBDB version.
+    - type: known_issue
+      requirement: Must match symptoms, version range, component behavior, and timing.
+    - type: previous_case
+      requirement: Must be sanitized, reviewed, and not treated as proof without matching evidence.
+
+challenge_questions:
+  - Did raft instability occur before or during the timeout window?
+  - Are the evidence sources time-window compatible?
+  - Is tablet metadata from the impact window or only from collection time?
+  - Are the affected tablets linked to the affected workload?
+  - Does the reference knowledge apply to the collected YBDB version?
+  - Did cold analysis independently find raft instability?
+  - Did guided analysis over-focus on raft because the reported context mentioned leadership?
+  - Are there stronger explanations such as CPU saturation, disk latency, network loss, or client-side timeout settings?
+  - What would we expect to see if raft instability caused the timeout increase?
+  - What would we expect to see if raft instability was only a symptom?
+
+confidence_model:
+  high:
+    requires:
+      - client.timeout_increase present during impact window
+      - raft.leader_instability overlaps or precedes timeout increase
+      - affected tablets are linked to affected workload
+      - evidence windows are compatible
+      - version-correct knowledge source validated
+      - no stronger alternative explanation
+  medium:
+    allows:
+      - partial time overlap
+      - incomplete workload-to-tablet mapping
+      - some missing metrics
+      - collection-time tablet report used only as supporting current-state context
+  low:
+    if:
+      - evidence_window_incompatible
+      - leader state only from collection-time snapshot
+      - workload-to-tablet mapping missing
+      - stronger alternative exists
+      - reference knowledge source version is uncertain
+  reject:
+    if:
+      - client timeouts clearly precede raft instability
+      - direct evidence shows stable leadership during the impact window
+      - required timeout evidence is absent
+      - raft evidence cannot be linked to affected workload
+
+outputs:
+  possible_insight: >
+    Client-visible timeouts are consistent with raft leader instability affecting
+    tablets involved in the impacted workload.
+  not_allowed_as_conclusion: >
+    Raft leader instability caused the incident.

@@ -1,0 +1,38 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$title: "EGATF Semantic Observation Vocabulary"
+$type: object
+required:
+  - schema_version
+  - kind
+  - observation_kinds
+properties:
+  schema_version:
+    type: string
+  kind:
+    type: string
+    const: semantic_observation_vocabulary
+  status:
+    type: string
+  purpose:
+    type: string
+  observation_kinds:
+    type: object
+    additionalProperties:
+      type: object
+      required:
+        - description
+        - possible_sources
+        - evidence_classes
+      properties:
+        description:
+          type: string
+        possible_sources:
+          type: array
+          items:
+            type: string
+        evidence_classes:
+          type: array
+          items:
+            type: string
+        timing_warning:
+          type: string
