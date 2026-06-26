@@ -1,7 +1,7 @@
 # EGATF Terminology
 
 **Document type:** Working glossary  
-**Status:** Draft v0.5  
+**Status:** Draft v0.6  
 **Repository path:** `framework/terminology.md`
 
 ---
@@ -49,7 +49,7 @@ Question:
 Includes:
 
 ```text
-Information -> Knowledge -> Insight -> Challenge -> Wisdom / Judgment
+Information -> Knowledge -> Insight -> Challenge -> Judgment
 ```
 
 ### Action Loop
@@ -119,7 +119,7 @@ Blocks closure when the outcome contradicts or only partially supports the judgm
 | Knowledge | Context from trusted sources such as documentation, source code, bug reports, runbooks, previous incidents, and domain expertise. |
 | Insight | A candidate explanation or hypothesis produced by combining evidence, information, and knowledge. |
 | Challenge | The deliberate attempt to test, weaken, disprove, or qualify an insight before it influences judgment. |
-| Wisdom / Judgment | The current best human judgment after evidence, insight, and challenge have been considered. |
+| Judgment | The current best human assessment after evidence, insight, and challenge have been considered. |
 | Decision | The selected next response based on the current best judgment. |
 | Action | The execution of the selected decision. |
 | Outcome | The measured result of the action. |
@@ -241,9 +241,9 @@ A candidate explanation or hypothesis produced by combining evidence, informatio
 
 The deliberate attempt to test, weaken, disprove, or qualify an insight before it influences judgment.
 
-### Wisdom / Judgment
+### Judgment
 
-The current best human judgment after evidence, information, knowledge, insight, and challenge have been considered.
+The current best human assessment after evidence, information, knowledge, insight, and challenge have been considered.
 
 ### Decision
 
@@ -260,6 +260,48 @@ The measured result of the action.
 ### Learning
 
 Reusable knowledge captured from the investigation.
+
+---
+
+## Analysis Technique Terms
+
+### Cold Analysis
+
+Analysis performed without using the reported problem statement, reported cause, or guided prompt as the primary direction.
+
+Cold Analysis answers:
+
+> What does the evidence show before we assume the reported context is correct?
+
+---
+
+### Guided Analysis
+
+Analysis that uses reported context to guide search and verification while treating all causal claims as hypotheses.
+
+Guided Analysis answers:
+
+> What do we find when we use the reported context as guidance, not proof?
+
+---
+
+### Isolated Analysis Sandbox
+
+A separated analysis pass where cold and guided analyses are run independently so their outputs can be compared without contaminating one with the assumptions of the other.
+
+Isolated Analysis Sandbox answers:
+
+> Did the same finding emerge independently, or only when the investigation was guided by the reported context?
+
+---
+
+### Reference Knowledge Validation
+
+The process of checking whether a knowledge source is authoritative, version-relevant, context-relevant, and directly applicable before it is used to support an insight.
+
+Reference Knowledge Validation answers:
+
+> Can this knowledge source safely support this claim in this environment?
 
 ---
 

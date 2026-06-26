@@ -41,7 +41,7 @@ Can AI-assisted troubleshooting be made more reliable by requiring every conclus
 The framework can be introduced as a chain:
 
 ```text
-Evidence -> Information -> Knowledge -> Insight -> Challenge -> Wisdom -> Decision -> Action -> Outcome -> Learning
+Evidence -> Information -> Knowledge -> Insight -> Challenge -> Judgment -> Decision -> Action -> Outcome -> Learning
 ```
 
 But the operating model is now three gated loops:
@@ -98,7 +98,7 @@ Insight
     ↓
 Challenge
     ↓
-Wisdom / Judgment
+Judgment
 ```
 
 Gate:
@@ -135,7 +135,7 @@ Without evidence, an insight is speculation.
 
 Without traceability, an insight cannot be trusted.
 
-Without challenge, an insight cannot become wisdom.
+Without challenge, an insight should not become judgment.
 
 Additional principles:
 
@@ -161,6 +161,8 @@ Additional principles:
 - Evidence extraction
 - Derived evidence generation
 - Cold and guided analysis
+- Isolated cold and guided analysis sandboxes
+- Reference knowledge validation
 - Anchoring risk in AI-assisted diagnosis
 - Reducing AI hallucination in operational workflows
 

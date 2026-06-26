@@ -1,7 +1,7 @@
 # Challenge Evaluation
 
 **Document type:** Stage detail  
-**Status:** Draft v0.5  
+**Status:** Draft v0.6  
 **Repository path:** `framework/challenge-evaluation.md`
 
 ---
@@ -28,7 +28,7 @@ Challenge is the deliberate attempt to test, weaken, disprove, or qualify an ins
 Challenge is the central gate of the Reasoning Loop.
 
 ```text
-Information -> Knowledge -> Insight -> Challenge -> Wisdom / Judgment
+Information -> Knowledge -> Insight -> Challenge -> Judgment
 ```
 
 The Challenge Confidence Gate asks:
@@ -37,7 +37,7 @@ The Challenge Confidence Gate asks:
 
 If the answer is no, the process must not continue to Decision. It must loop back to Insight, Knowledge, or the Evidence Loop.
 
-The Challenge stage receives work from the Evidence Loop after the Evidence Sufficiency Gate has been passed. It may return work to the Evidence Loop when more evidence is required. It feeds the Action Loop only indirectly, through Wisdom / Judgment and Decision. If the Action Loop reaches the Outcome Validation Gate and the outcome contradicts the judgment, the process returns to Challenge.
+The Challenge stage receives work from the Evidence Loop after the Evidence Sufficiency Gate has been passed. It may return work to the Evidence Loop when more evidence is required. It feeds the Action Loop only indirectly, through Judgment and Decision. If the Action Loop reaches the Outcome Validation Gate and the outcome contradicts the judgment, the process returns to Challenge.
 
 
 ## Challenge Flow
@@ -70,7 +70,7 @@ flowchart TD
     R -- Split --> I
     R -- More evidence required --> EV[Return to Evidence Loop]
     CONF --> GATE{Confidence sufficient?}
-    GATE -- Yes --> J[Wisdom / Judgment]
+    GATE -- Yes --> J[Judgment]
     GATE -- No --> EV
 ```
 
@@ -86,7 +86,7 @@ Each insight should enter Challenge with an insight package.
 | Insight statement | The candidate explanation being tested. |
 | Supporting evidence | Evidence currently believed to support the insight. |
 | Information statements | Observations, timelines, comparisons, or relationships used by the insight. |
-| Knowledge sources | Documentation, source code, known bugs, runbooks, or prior incidents used to interpret the evidence. |
+| Knowledge sources | Documentation, source code, known bugs, runbooks, or prior incidents used to interpret the evidence. These should be validated for version, authority, freshness, and direct applicability. |
 | Assumptions | Claims required by the insight that are not yet fully proven. |
 | Initial confidence | Confidence before challenge. |
 | Alternatives | Other possible explanations. |
@@ -203,11 +203,36 @@ If the claimed cause happened after the effect, the insight should usually be re
 
 ---
 
+## Cold and Guided Sandbox Comparison
+
+When cold and guided analyses are used, Challenge should compare them explicitly.
+
+| Comparison | Confidence effect |
+|---|---|
+| Cold and guided agree with evidence provenance | Raises confidence. |
+| Guided finds something cold missed, and it is verified in evidence | May raise confidence, but check anchoring. |
+| Guided produces a claim not found in evidence | Lowers confidence. |
+| Cold finds a contradictory anomaly | Lowers confidence or forces split. |
+| Both passes depend on the same weak preparation output | Does not independently raise confidence. |
+
+## Reference Knowledge Validation in Challenge
+
+Challenge should verify that each knowledge source used by an insight is suitable.
+
+| Check | Confidence effect |
+|---|---|
+| Correct product version | Raises confidence. |
+| Wrong or unknown version | Lowers confidence. |
+| Authoritative source such as source code or official docs | Raises confidence. |
+| Anecdotal or historical source only | Limits confidence. |
+| Directly supports the claim | Raises confidence. |
+| Only loosely related | Lowers confidence. |
+
 ## Challenge Result Types
 
 | Result | Meaning | Next step |
 |---|---|---|
-| Strengthened | The insight survived challenge and confidence increased or remained acceptable. | Proceed to Wisdom / Judgment. |
+| Strengthened | The insight survived challenge and confidence increased or remained acceptable. | Proceed to Judgment. |
 | Weakened | The insight is still possible but less supported than before. | Revise the insight or collect more evidence. |
 | Rejected | The insight is contradicted or unsupported enough that it should not drive decisions. | Return to Insight and consider alternatives. |
 | Split | The insight combines multiple claims that need separate evaluation. | Split into smaller hypotheses and challenge each one. |

@@ -24,10 +24,57 @@ Example:
 v0.1 - Initial draft
 v0.2 - Evidence stage refinement
 v0.3 - Evidence preparation taxonomy
-v0.5 - Three-loop operating model
 v0.4 - Collection context and evidence package manifests
+v0.5 - Three-loop operating model
+v0.6 - Judgment terminology update
 v1.0 - First stable public framework
 ```
+
+---
+
+## v0.6 - Judgment Terminology Update
+
+**Date:** 2026-06-26  
+**Status:** Draft  
+**Stage:** Early research and validation
+
+### Summary
+
+Renamed the former **Wisdom** stage to **Judgment**.
+
+The concept remains the same: this stage represents the current best human assessment after evidence, information, knowledge, insight, and challenge have been considered.
+
+The new name is clearer, more practical, and better aligned with the purpose of EGATF.
+
+The chain is now:
+
+```text
+Evidence -> Information -> Knowledge -> Insight -> Challenge -> Judgment -> Decision -> Action -> Outcome -> Learning
+```
+
+### Changed
+
+- Replaced the stage name **Wisdom** with **Judgment** across framework documents, terminology, process flow, challenge evaluation, case template, diagrams, and slide materials.
+- Reworded the core principle from "Without challenge, an insight cannot become wisdom" to "Without challenge, an insight should not become judgment".
+- Updated the Reasoning Loop to end with Judgment.
+- Updated the Challenge Confidence Gate to describe progression from challenged insight to responsible judgment.
+- Updated case study headings and evidence chain summaries.
+
+### Rationale
+
+The term **Wisdom** was too abstract and created the wrong tone. It suggested philosophy or mysticism rather than an accountable engineering assessment.
+
+The term **Judgment** better reflects the intended meaning:
+
+- A human or team owns the assessment.
+- The assessment is evidence-aware.
+- The assessment remains uncertainty-aware.
+- The assessment can be revised.
+- The assessment is distinct from Decision and Action.
+
+### Current Hypothesis
+
+> Replacing Wisdom with Judgment makes EGATF clearer, more practitioner-friendly, and easier to explain to engineering teams.
 
 ---
 
@@ -44,7 +91,7 @@ Reframed EGATF from a straight-line chain into three related gated loops.
 The chain remains useful for teaching:
 
 ```text
-Evidence -> Information -> Knowledge -> Insight -> Challenge -> Wisdom -> Decision -> Action -> Outcome -> Learning
+Evidence -> Information -> Knowledge -> Insight -> Challenge -> Judgment -> Decision -> Action -> Outcome -> Learning
 ```
 
 The operating model is now:
@@ -259,7 +306,7 @@ Insight
     ↓
 Challenge
     ↓
-Wisdom
+Judgment
     ↓
 Decision
     ↓
@@ -404,7 +451,7 @@ Insight
     ↓
 Challenge
     ↓
-Wisdom
+Judgment
     ↓
 Decision
     ↓

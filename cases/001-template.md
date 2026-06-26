@@ -1,7 +1,7 @@
 # EGATF Case Study Template
 
 **Document type:** Case study template  
-**Status:** Draft v0.5  
+**Status:** Draft v0.6  
 **Repository path:** `cases/001-template.md`
 
 ---
@@ -31,7 +31,7 @@ The goal is to show why the answer should be trusted.
 | Date investigated | |
 | Analyst | |
 | Reviewers | |
-| EGATF version used | v0.5 |
+| EGATF version used | v0.6 |
 | Status | Draft / In review / Complete |
 | Sensitivity | Public / Internal / Confidential / Sanitized |
 
@@ -493,11 +493,11 @@ It answers:
 |---|---|---|---|---|
 | K-001 | Documentation / Source code / Bug / Runbook / Prior incident | | | |
 
-### Version checks
+### Reference knowledge validation
 
-| Knowledge source | Applies to this environment? | Reason |
-|---|---|---|
-| | Yes / No / Unknown | |
+| Knowledge ID | Version applies? | Component applies? | Source authority | Freshness | Directly supports claim? | Notes |
+|---|---|---|---|---|---|---|
+| K-001 | Yes / No / Unknown | Yes / No / Unknown | High / Medium / Low | Current / Possibly stale / Unknown | Yes / No / Partial | |
 
 ### Knowledge gaps
 
@@ -507,7 +507,44 @@ It answers:
 
 ---
 
-## 9. Insight
+## 9. Cold and Guided Analysis
+
+Cold and guided analysis should be run in isolated analysis sandboxes where anchoring risk matters.
+
+Cold analysis should not receive the reported cause or the guided prompt. Guided analysis may receive reported context, but only as guidance, not proof. Compare the outputs before creating or accepting insights.
+
+### Cold analysis sandbox
+
+| Field | Value |
+|---|---|
+| Prompt or method | |
+| Inputs provided | |
+| Inputs deliberately withheld | Reported cause / customer theory / guided prompt |
+| Findings | |
+| Evidence IDs | |
+
+### Guided analysis sandbox
+
+| Field | Value |
+|---|---|
+| Prompt or method | |
+| Reported context provided | |
+| Guardrail instruction | Treat reported context as guidance, not proof |
+| Findings | |
+| Evidence IDs | |
+
+### Cold versus guided comparison
+
+| Comparison question | Answer | Confidence effect |
+|---|---|---|
+| What did both passes find? | | |
+| What did only the cold pass find? | | |
+| What did only the guided pass find? | | |
+| Did guided analysis overfit to reported context? | Yes / No / Unknown | |
+| Did cold analysis miss a verified reported symptom? | Yes / No / Unknown | |
+| Which differences should feed into Challenge? | | |
+
+## 10. Insight
 
 Insight is a candidate explanation produced by combining evidence, information, and knowledge.
 
@@ -535,7 +572,7 @@ It answers:
 
 ---
 
-## 10. Challenge
+## 11. Challenge
 
 Challenge is the deliberate attempt to test, weaken, disprove, or qualify an insight.
 
@@ -590,9 +627,9 @@ Summarize what survived challenge and what did not.
 
 ---
 
-## 11. Wisdom / Judgment
+## 12. Judgment
 
-Wisdom is the current best human judgment after evidence, information, knowledge, insight, and challenge have been considered.
+Judgment is the current best human assessment after evidence, information, knowledge, insight, and challenge have been considered.
 
 This term is provisional in EGATF and may later be renamed.
 
@@ -630,7 +667,7 @@ Describe the operational, customer, engineering, or communication risk if this j
 
 ---
 
-## 12. Decision
+## 13. Decision
 
 Decision is the selected response based on the current best judgment.
 
@@ -658,7 +695,7 @@ Explain why this decision was selected.
 
 ---
 
-## 13. Action
+## 14. Action
 
 Action is the execution of the decision.
 
@@ -680,7 +717,7 @@ It answers:
 
 ---
 
-## 14. Outcome
+## 15. Outcome
 
 Outcome is the measured result of an action.
 
@@ -711,7 +748,7 @@ Summarize what happened after action was taken.
 
 ---
 
-## 15. Learning
+## 16. Learning
 
 Learning is reusable knowledge captured from the investigation.
 
@@ -747,7 +784,7 @@ Summarize what this case teaches future human and AI-assisted investigations.
 
 ---
 
-## 16. Loop Gate Summary
+## 17. Loop Gate Summary
 
 ### Evidence Sufficiency Gate
 
@@ -775,14 +812,14 @@ Summarize what this case teaches future human and AI-assisted investigations.
 
 ---
 
-## 17. Evidence Chain Summary
+## 18. Evidence Chain Summary
 
 Use this section to summarize the final traceable chain.
 
 ```text
 Decision
     ↓ supported by
-Wisdom / Judgment
+Judgment
     ↓ based on
 Challenged Insight
     ↓ derived from
@@ -820,7 +857,7 @@ Reported Context
 
 ---
 
-## 18. AI Usage Record
+## 19. AI Usage Record
 
 Use this section to record where AI was used in the investigation.
 
@@ -832,6 +869,7 @@ Use this section to record where AI was used in the investigation.
 | Evidence Preparation | Yes / No | | Yes / No |
 | Information | Yes / No | | Yes / No |
 | Knowledge | Yes / No | | Yes / No |
+| Cold and Guided Analysis | Yes / No | | Yes / No |
 | Insight | Yes / No | | Yes / No |
 | Challenge | Yes / No | | Yes / No |
 | Decision | Yes / No | | Yes / No |
@@ -851,7 +889,7 @@ Record hallucinations, unsupported claims, missed evidence, or useful behavior.
 
 ---
 
-## 19. Review Notes
+## 20. Review Notes
 
 ### Reviewer questions
 
@@ -873,7 +911,7 @@ Add reviewer comments here.
 
 ---
 
-## 20. Case Status
+## 21. Case Status
 
 | Field | Value |
 |---|---|
@@ -885,7 +923,7 @@ Add reviewer comments here.
 
 ---
 
-## 21. Revision History
+## 22. Revision History
 
 | Version | Date | Author | Change |
 |---|---|---|---|

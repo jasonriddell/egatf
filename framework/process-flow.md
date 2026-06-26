@@ -1,7 +1,7 @@
 # EGATF Process Flow
 
 **Document type:** Process overview  
-**Status:** Draft v0.5  
+**Status:** Draft v0.6  
 **Repository path:** `framework/process-flow.md`
 
 ---
@@ -30,7 +30,7 @@ Can we trust what happened next?
 The chain remains the vocabulary of the framework:
 
 ```text
-Evidence -> Information -> Knowledge -> Insight -> Challenge -> Wisdom -> Decision -> Action -> Outcome -> Learning
+Evidence -> Information -> Knowledge -> Insight -> Challenge -> Judgment -> Decision -> Action -> Outcome -> Learning
 ```
 
 The three-loop model is the operating model. Each loop has a gate that can stop progression, require rework, or return the investigation to an earlier loop.
@@ -38,7 +38,7 @@ The three-loop model is the operating model. Each loop has a gate that can stop 
 | Loop | Contains | Gate | Gate question |
 |---|---|---|---|
 | Evidence Loop | Reported Context, Collection Context, Raw Source Material, Evidence Preparation, Prepared Evidence Base, Information | Evidence Sufficiency Gate | Do we understand the evidence well enough to reason from it? |
-| Reasoning Loop | Information, Knowledge, Insight, Challenge, Wisdom / Judgment | Challenge Confidence Gate | Has the insight survived enough challenge to become responsible judgment? |
+| Reasoning Loop | Information, Knowledge, Insight, Challenge, Judgment | Challenge Confidence Gate | Has the insight survived enough challenge to become responsible judgment? |
 | Action Loop | Decision, Action, Outcome, Learning | Outcome Validation Gate | Did the action produce the expected outcome, and what should be learned or revisited? |
 
 Information intentionally appears at the boundary between the Evidence Loop and the Reasoning Loop. It is the point where prepared evidence becomes meaningful enough to support reasoning, but it should still stop short of diagnosis.
@@ -57,7 +57,7 @@ Information intentionally appears at the boundary between the Evidence Loop and 
 | Knowledge | Context from trusted sources such as documentation, source code, bug reports, runbooks, previous incidents, and domain expertise. |
 | Insight | A candidate explanation or hypothesis produced by combining evidence, information, and knowledge. |
 | Challenge | The deliberate attempt to test, weaken, disprove, or qualify an insight before it influences judgment. |
-| Wisdom / Judgment | The current best human judgment after evidence, insight, and challenge have been considered. |
+| Judgment | The current best human assessment after evidence, insight, and challenge have been considered. |
 | Decision | The selected next response based on the current best judgment. |
 | Action | The execution of the selected decision. |
 | Outcome | The measured result of the action. |
@@ -93,7 +93,7 @@ flowchart TD
       GATE2 -- Split --> I
       GATE2 -- More evidence required --> D
       GATE2 -- Knowledge mismatch --> H
-      GATE2 -- Strengthened --> K[Wisdom / Judgment]
+      GATE2 -- Strengthened --> K[Judgment]
     end
 
     K --> K1{Confidence sufficient for decision?}
@@ -151,6 +151,24 @@ Evidence insufficient
 Evidence unsuitable for the question being asked
 ```
 
+### Cold and Guided Analysis Sandbox Gate
+
+Question:
+
+> Have cold analysis and guided analysis been separated and compared where anchoring risk matters?
+
+If no:
+
+- Run a cold pass without the reported cause.
+- Run a guided pass with reported context as guidance, not proof.
+- Compare outputs before accepting insights.
+
+Loop:
+
+```text
+Information -> Cold and guided sandbox analysis -> Insight or Challenge
+```
+
 ### Gate 2: Challenge Confidence Gate
 
 Question:
@@ -175,7 +193,7 @@ The gate should check:
 Gate outcomes:
 
 ```text
-Strengthened: proceed to Wisdom / Judgment
+Strengthened: proceed to Judgment
 Weakened: revise the insight
 Rejected: return to alternatives
 Split: break into smaller hypotheses

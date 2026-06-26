@@ -1,7 +1,7 @@
 # Evidence-Grounded AI Troubleshooting Framework
 
 **Working acronym:** EGATF  
-**Status:** Draft v0.5  
+**Status:** Draft v0.6  
 **Document type:** Canonical framework definition  
 **Repository path:** `framework/framework.md`
 
@@ -59,7 +59,7 @@ In short:
 
 > Without evidence, an insight is speculation.  
 > Without traceability, an insight cannot be trusted.  
-> Without challenge, an insight cannot become wisdom.
+> Without challenge, an insight should not become judgment.
 
 Collection-context principle:
 
@@ -72,12 +72,12 @@ Collection-context principle:
 The framework can be introduced as a chain:
 
 ```text
-Evidence -> Information -> Knowledge -> Insight -> Challenge -> Wisdom -> Decision -> Action -> Outcome -> Learning
+Evidence -> Information -> Knowledge -> Insight -> Challenge -> Judgment -> Decision -> Action -> Outcome -> Learning
 ```
 
 This chain is useful as a vocabulary and teaching model.
 
-However, the operating model is not a straight line. EGATF is better represented as three gated loops:
+However, the operating model is not a straight line. EGATF is intended to operate as three related gated loops. Each loop has a gate that can stop progression, require rework, or return the investigation to an earlier loop.
 
 ```text
 Loop 1: Evidence Loop
@@ -89,40 +89,14 @@ Can we trust what we believe?
 Loop 3: Action Loop
 Can we trust what happened next?
 ```
-
-The loops prevent the investigation from progressing when evidence is weak, reasoning is unsupported, or outcomes contradict the judgment.
-
-## Three Gated Loops
-
-The linear chain is useful for teaching the framework, but EGATF is intended to operate as three related gated loops.
-
-```text
-Loop 1: Evidence Loop
-Can we trust what we are reasoning from?
-
-Loop 2: Reasoning Loop
-Can we trust what we believe?
-
-Loop 3: Action Loop
-Can we trust what happened next?
-```
-
-The chain remains the vocabulary of the framework:
-
-```text
-Evidence -> Information -> Knowledge -> Insight -> Challenge -> Wisdom -> Decision -> Action -> Outcome -> Learning
-```
-
-The three-loop model is the operating model. Each loop has a gate that can stop progression, require rework, or return the investigation to an earlier loop.
 
 | Loop | Contains | Gate | Gate question |
 |---|---|---|---|
 | Evidence Loop | Reported Context, Collection Context, Raw Source Material, Evidence Preparation, Prepared Evidence Base, Information | Evidence Sufficiency Gate | Do we understand the evidence well enough to reason from it? |
-| Reasoning Loop | Information, Knowledge, Insight, Challenge, Wisdom / Judgment | Challenge Confidence Gate | Has the insight survived enough challenge to become responsible judgment? |
+| Reasoning Loop | Information, Knowledge, Insight, Challenge, Judgment | Challenge Confidence Gate | Has the insight survived enough challenge to become responsible judgment? |
 | Action Loop | Decision, Action, Outcome, Learning | Outcome Validation Gate | Did the action produce the expected outcome, and what should be learned or revisited? |
 
 Information intentionally appears at the boundary between the Evidence Loop and the Reasoning Loop. It is the point where prepared evidence becomes meaningful enough to support reasoning, but it should still stop short of diagnosis.
----
 
 ## 6. Loop 1: Evidence Loop
 
@@ -176,7 +150,7 @@ Insight
     ↓
 Challenge
     ↓
-Wisdom / Judgment
+Judgment
 ```
 
 Purpose:
@@ -185,7 +159,10 @@ Purpose:
 
 The Reasoning Loop includes:
 
+- Validating reference knowledge sources before they are used to support an insight.
 - Applying documentation, source code, bug reports, runbooks, prior incidents, and domain knowledge.
+- Running cold analysis and guided analysis in isolated analysis sandboxes where useful.
+- Comparing the cold and guided outputs before creating or accepting insights.
 - Generating candidate insights as hypotheses.
 - Challenging each insight against evidence, contradictions, missing evidence, assumptions, alternatives, timeline order, time-window compatibility, version fit, and preparation quality.
 - Producing a human judgment only after the insight survives challenge.
@@ -289,7 +266,7 @@ The gate should check:
 Gate outcomes:
 
 ```text
-Strengthened: proceed to Wisdom / Judgment
+Strengthened: proceed to Judgment
 Weakened: revise the insight
 Rejected: return to alternatives
 Split: break into smaller hypotheses
@@ -427,7 +404,7 @@ A tablet report parser that identifies leaderless, over-replicated, or under-rep
 | Knowledge | Context from trusted sources such as documentation, source code, bug reports, runbooks, previous incidents, and domain expertise. |
 | Insight | A candidate explanation or hypothesis produced by combining evidence, information, and knowledge. |
 | Challenge | The deliberate attempt to test, weaken, disprove, or qualify an insight before it influences judgment. |
-| Wisdom / Judgment | The current best human judgment after evidence, insight, and challenge have been considered. |
+| Judgment | The current best human assessment after evidence, insight, and challenge have been considered. |
 | Decision | The selected next response based on the current best judgment. |
 | Action | The execution of the selected decision. |
 | Outcome | The measured result of the action. |
@@ -465,18 +442,70 @@ Split
 More evidence required
 ```
 
-Only a strengthened or appropriately qualified insight should move toward Wisdom / Judgment.
+Only a strengthened or appropriately qualified insight should move toward Judgment.
 
 ---
 
-## 13. Evidence Chain Requirements
+## 13. Cold and Guided Analysis Sandboxes
+
+Cold analysis and guided analysis are Reasoning Loop techniques for reducing anchoring risk.
+
+Cold analysis reviews prepared evidence without using the reported problem statement as the primary guide. Guided analysis uses the reported context to focus search and verification.
+
+For stronger validation, these two passes should be run in isolated analysis sandboxes.
+
+An isolated analysis sandbox means:
+
+- The cold pass does not receive the customer theory, reported cause, or guided prompt.
+- The guided pass receives the reported context as guidance, not proof.
+- The outputs are recorded separately.
+- The comparison is performed after both outputs exist.
+- Agreement increases confidence only when both passes are evidence-grounded.
+- Disagreement becomes an input to Challenge.
+
+The comparison should ask:
+
+- What did both passes find?
+- What did only the cold pass find?
+- What did only the guided pass find?
+- Did guided analysis overfit to the reported context?
+- Did cold analysis miss a reported symptom that was later verified?
+- Which differences affect confidence?
+
+## 14. Reference Knowledge Validation
+
+Knowledge sources should be validated before they are used to support an insight.
+
+Examples of reference knowledge sources include:
+
+- Product documentation
+- Source code
+- Release notes
+- Known bug reports
+- Runbooks
+- Architecture diagrams
+- Previous incidents
+- Domain expertise
+
+Validation should check:
+
+- Version applicability
+- Product or component applicability
+- Source authority
+- Date or freshness
+- Whether the source is normative, historical, advisory, or anecdotal
+- Whether the source directly supports the claim being made
+
+A knowledge source that is plausible but version-mismatched should lower confidence or force further validation.
+
+## 15. Evidence Chain Requirements
 
 A well-formed EGATF investigation should allow a reviewer to trace backward from any decision to the evidence that supported it.
 
 ```text
 Decision
     ↓ supported by
-Wisdom / Judgment
+Judgment
     ↓ based on
 Challenged Insight
     ↓ derived from
@@ -497,7 +526,7 @@ The evidence chain must show not only what supported the decision, but also what
 
 ---
 
-## 14. Non-Goals
+## 16. Non-Goals
 
 EGATF is not intended to be:
 
@@ -515,7 +544,7 @@ The framework is intended to improve reasoning discipline, not remove human resp
 
 ---
 
-## 15. Success Criteria
+## 17. Success Criteria
 
 The framework will be considered useful if it helps practitioners:
 
@@ -543,7 +572,7 @@ Important validation questions:
 
 ---
 
-## 16. Current Status
+## 18. Current Status
 
 This document is an early draft.
 
@@ -555,6 +584,7 @@ v0.2: Evidence stage refinement
 v0.3: Evidence preparation taxonomy
 v0.4: Collection context and evidence package manifests
 v0.5: Three-loop operating model and gates
+v0.6: Rename Wisdom to Judgment
 ```
 
 Future revisions should be recorded in `framework/changelog.md`.

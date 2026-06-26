@@ -1,7 +1,7 @@
 # EGATF Stage Deep Dives
 
 **Document type:** Stage detail  
-**Status:** Draft v0.5  
+**Status:** Draft v0.6  
 **Repository path:** `framework/stage-deep-dives.md`
 
 ---
@@ -30,7 +30,7 @@ Can we trust what happened next?
 The chain remains the vocabulary of the framework:
 
 ```text
-Evidence -> Information -> Knowledge -> Insight -> Challenge -> Wisdom -> Decision -> Action -> Outcome -> Learning
+Evidence -> Information -> Knowledge -> Insight -> Challenge -> Judgment -> Decision -> Action -> Outcome -> Learning
 ```
 
 The three-loop model is the operating model. Each loop has a gate that can stop progression, require rework, or return the investigation to an earlier loop.
@@ -38,7 +38,7 @@ The three-loop model is the operating model. Each loop has a gate that can stop 
 | Loop | Contains | Gate | Gate question |
 |---|---|---|---|
 | Evidence Loop | Reported Context, Collection Context, Raw Source Material, Evidence Preparation, Prepared Evidence Base, Information | Evidence Sufficiency Gate | Do we understand the evidence well enough to reason from it? |
-| Reasoning Loop | Information, Knowledge, Insight, Challenge, Wisdom / Judgment | Challenge Confidence Gate | Has the insight survived enough challenge to become responsible judgment? |
+| Reasoning Loop | Information, Knowledge, Insight, Challenge, Judgment | Challenge Confidence Gate | Has the insight survived enough challenge to become responsible judgment? |
 | Action Loop | Decision, Action, Outcome, Learning | Outcome Validation Gate | Did the action produce the expected outcome, and what should be learned or revisited? |
 
 Information intentionally appears at the boundary between the Evidence Loop and the Reasoning Loop. It is the point where prepared evidence becomes meaningful enough to support reasoning, but it should still stop short of diagnosis.
@@ -57,7 +57,7 @@ Information intentionally appears at the boundary between the Evidence Loop and 
 | Knowledge | Context from trusted sources such as documentation, source code, bug reports, runbooks, previous incidents, and domain expertise. |
 | Insight | A candidate explanation or hypothesis produced by combining evidence, information, and knowledge. |
 | Challenge | The deliberate attempt to test, weaken, disprove, or qualify an insight before it influences judgment. |
-| Wisdom / Judgment | The current best human judgment after evidence, insight, and challenge have been considered. |
+| Judgment | The current best human assessment after evidence, insight, and challenge have been considered. |
 | Decision | The selected next response based on the current best judgment. |
 | Action | The execution of the selected decision. |
 | Outcome | The measured result of the action. |
@@ -230,10 +230,24 @@ Gate:
 Steps:
 
 1. Identify relevant knowledge sources.
-2. Check version applicability.
-3. Record source authority.
-4. Link knowledge to information.
-5. Record knowledge gaps.
+2. Validate version applicability.
+3. Validate product and component applicability.
+4. Record source authority.
+5. Record source freshness or date.
+6. Classify the source as normative, historical, advisory, or anecdotal.
+7. Link knowledge to information.
+8. Record knowledge gaps.
+
+Reference knowledge validation checks:
+
+| Validation check | Purpose |
+|---|---|
+| Version applicability | Prevent wrong-version reasoning. |
+| Component applicability | Ensure the source applies to the affected subsystem. |
+| Source authority | Distinguish documentation or source code from anecdote. |
+| Freshness | Avoid outdated references. |
+| Direct claim support | Ensure the source supports the actual claim being made. |
+| Contradicting references | Identify disagreement between sources. |
 
 Output:
 
@@ -241,10 +255,44 @@ Output:
 - Version applicability notes
 - Knowledge claims
 - Knowledge gaps
+- Reference knowledge validation notes
 
 Loop condition:
 
-Return here if a source is outdated, version-mismatched, or uncertain.
+Return here if a source is outdated, version-mismatched, weak, or uncertain.
+
+### Cold and Guided Analysis
+
+Cold and guided analysis are Reasoning Loop techniques used before or during Insight generation.
+
+Cold analysis reviews prepared evidence without using the reported problem statement or reported cause as the main guide. Guided analysis uses reported context to focus search and verification, while treating all reported causal claims as hypotheses.
+
+Where anchoring risk matters, both passes should be run in isolated analysis sandboxes.
+
+This means:
+
+- The cold pass does not receive the reported cause.
+- The guided pass receives reported context as guidance, not proof.
+- The outputs are recorded separately.
+- The comparison happens only after both passes are complete.
+
+Comparison questions:
+
+| Question | Purpose |
+|---|---|
+| What did both passes find? | Identify independent agreement. |
+| What did only the cold pass find? | Identify anomalies not suggested by the report. |
+| What did only the guided pass find? | Identify report-driven findings and anchoring risk. |
+| Did guided analysis overfit to the reported context? | Prevent confirmation bias. |
+| Did cold analysis miss a verified reported symptom? | Improve evidence preparation or search. |
+
+Output:
+
+- Cold analysis findings
+- Guided analysis findings
+- Comparison notes
+- Anchoring risk assessment
+- Findings to carry into Insight and Challenge
 
 ### Insight
 
@@ -299,7 +347,7 @@ Return to Insight if the insight is weakened, rejected, or split.
 
 Return to the Evidence Loop if more evidence is required.
 
-### Wisdom / Judgment
+### Judgment
 
 Steps:
 

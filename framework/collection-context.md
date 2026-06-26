@@ -1,7 +1,7 @@
 # Collection Context
 
 **Document type:** Framework detail  
-**Status:** Draft v0.5  
+**Status:** Draft v0.6  
 **Repository path:** `framework/collection-context.md`
 
 ---

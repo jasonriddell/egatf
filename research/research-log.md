@@ -32,7 +32,7 @@ Reframed EGATF as three related gated loops rather than only a straight chain.
 The chain remains:
 
 ```text
-Evidence -> Information -> Knowledge -> Insight -> Challenge -> Wisdom -> Decision -> Action -> Outcome -> Learning
+Evidence -> Information -> Knowledge -> Insight -> Challenge -> Judgment -> Decision -> Action -> Outcome -> Learning
 ```
 
 The operating model is now:
@@ -65,6 +65,45 @@ These gates prevent progression when evidence is weak, reasoning is unsupported,
 - Use the three-loop model in the first worked case study.
 - Validate whether the gates are understandable to support engineers and SREs.
 - Check whether the loops make the case template easier or heavier to use.
+
+## 2026-06-26 - Wisdom Renamed to Judgment
+
+**Type:** Terminology refinement  
+**Status:** Recorded
+
+### Summary
+
+Renamed the former **Wisdom** stage to **Judgment**.
+
+The stage still represents the current best human assessment after evidence, information, knowledge, insight, and challenge have been considered. The name now better matches the practical, engineering-oriented tone of EGATF.
+
+Updated chain:
+
+```text
+Evidence -> Information -> Knowledge -> Insight -> Challenge -> Judgment -> Decision -> Action -> Outcome -> Learning
+```
+
+### Why It Matters
+
+The previous term was too abstract and risked making the framework sound philosophical rather than operational.
+
+Judgment is clearer because it emphasizes accountable human assessment under uncertainty.
+
+### Notes
+
+Updated principle:
+
+> Without evidence, an insight is speculation.  
+> Without traceability, an insight cannot be trusted.  
+> Without challenge, an insight should not become judgment.
+
+### Follow-up
+
+- Use Judgment consistently in all future documents and slides.
+- Treat this as a terminology correction, not a conceptual redesign.
+- Test whether reviewers find the chain easier to understand.
+
+---
 
 ## 2026-06-24 - Collection Context Added
 
@@ -343,7 +382,7 @@ Insight
     ↓
 Challenge
     ↓
-Wisdom
+Judgment
     ↓
 Decision
     ↓
@@ -372,7 +411,7 @@ Challenge is the deliberate attempt to test, weaken, disprove, or qualify an AI-
 ## Open Research Questions
 
 1. Does a formal Challenge stage improve AI-assisted troubleshooting?
-2. Should Wisdom remain as a distinct framework stage?
+2. Is Judgment the clearest name for the post-Challenge assessment stage?
 3. What is the best name for Challenge?
 4. Should Collection Context become a top-level stage?
 5. How should confidence be represented?
@@ -406,7 +445,7 @@ Potential article sequence:
 2. From Ticket Summary to Evidence: Avoiding Anchoring Bias
 3. The Three Loops of Evidence-Grounded AI Troubleshooting
 4. Collection Context: Why Support Bundles Must Explain Themselves
-4. From Raw Source Material to Prepared Evidence
+5. From Raw Source Material to Prepared Evidence
 5. Source Transformation Is Not Evidence Extraction
 6. Information Is Not Insight: Structuring Observations for AI
 7. Knowledge Sources: Documentation, Source Code, Bugs, and History
