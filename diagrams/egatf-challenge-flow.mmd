@@ -1,0 +1,29 @@
+flowchart TD
+    A[Candidate Insight] --> B[Challenge Package]
+    B --> S[Supporting evidence]
+    B --> C[Contradicting evidence]
+    B --> M[Missing evidence]
+    B --> AS[Assumptions]
+    B --> ALT[Alternative explanations]
+    B --> T[Timeline order]
+    B --> W[Time-window compatibility]
+    B --> V[Version and knowledge fit]
+    B --> P[Preparation quality]
+    S --> E[Evaluate challenge dimensions]
+    C --> E
+    M --> E
+    AS --> E
+    ALT --> E
+    T --> E
+    W --> E
+    V --> E
+    P --> E
+    E --> R{Challenge result}
+    R -- Strengthened --> CONF[Assign confidence after challenge]
+    R -- Weakened --> I[Revise insight]
+    R -- Rejected --> I
+    R -- Split --> I
+    R -- More evidence required --> EV[Return to Evidence Loop]
+    CONF --> GATE{Confidence sufficient?}
+    GATE -- Yes --> J[Wisdom / Judgment]
+    GATE -- No --> EV

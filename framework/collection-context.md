@@ -1,8 +1,14 @@
 # Collection Context
 
 **Document type:** Framework detail  
-**Status:** Draft v0.4  
+**Status:** Draft v0.5  
 **Repository path:** `framework/collection-context.md`
+
+---
+
+## Relationship to the Three-Loop Model
+
+Collection Context belongs to the Evidence Loop. Its purpose is to prevent reasoning from starting until the evidence package scope, timing, version, and limitations are understood.
 
 ---
 

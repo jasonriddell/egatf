@@ -10,6 +10,18 @@ This request proposes extending the support bundle manifest, or adding companion
 
 ---
 
+## Relationship to EGATF Three-Loop Model
+
+This feature supports the EGATF Evidence Loop.
+
+The Evidence Sufficiency Gate asks:
+
+> Do we understand the evidence well enough to reason from it?
+
+A richer support bundle manifest helps answer that question by making collection context, timing semantics, schema version, environment identity, component descriptions, and file indexes explicit.
+
+---
+
 ## Problem
 
 Support bundles are increasingly used by humans, automated parsers, and AI-assisted workflows to diagnose customer issues.

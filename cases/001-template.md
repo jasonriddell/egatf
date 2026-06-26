@@ -1,7 +1,7 @@
 # EGATF Case Study Template
 
 **Document type:** Case study template  
-**Status:** Draft v0.1  
+**Status:** Draft v0.5  
 **Repository path:** `cases/001-template.md`
 
 ---
@@ -31,9 +31,23 @@ The goal is to show why the answer should be trusted.
 | Date investigated | |
 | Analyst | |
 | Reviewers | |
-| EGATF version used | v0.4 |
+| EGATF version used | v0.5 |
 | Status | Draft / In review / Complete |
 | Sensitivity | Public / Internal / Confidential / Sanitized |
+
+---
+
+## Operating Model for This Case
+
+This case should be worked through the three EGATF loops.
+
+| Loop | Question | Gate |
+|---|---|---|
+| Evidence Loop | Can we trust what we are reasoning from? | Evidence Sufficiency Gate |
+| Reasoning Loop | Can we trust what we believe? | Challenge Confidence Gate |
+| Action Loop | Can we trust what happened next? | Outcome Validation Gate |
+
+The case should not move from one loop to the next until the relevant gate has been satisfied or the remaining uncertainty has been explicitly accepted.
 
 ---
 
@@ -733,7 +747,35 @@ Summarize what this case teaches future human and AI-assisted investigations.
 
 ---
 
-## 16. Evidence Chain Summary
+## 16. Loop Gate Summary
+
+### Evidence Sufficiency Gate
+
+| Question | Answer |
+|---|---|
+| Do we understand the evidence well enough to reason from it? | Yes / No / Partially |
+| What blocked or delayed progression? | |
+| What rework was required? | |
+
+### Challenge Confidence Gate
+
+| Question | Answer |
+|---|---|
+| Has the insight survived enough challenge to become responsible judgment? | Yes / No / Partially |
+| What was the challenge result? | Strengthened / Weakened / Rejected / Split / More evidence required |
+| What confidence remained after challenge? | Low / Medium / High |
+
+### Outcome Validation Gate
+
+| Question | Answer |
+|---|---|
+| Did the action produce the expected outcome? | Yes / No / Partially / Unknown |
+| Did the outcome support the judgment? | Yes / No / Partially / Unknown |
+| Does the investigation need to loop back? | Yes / No |
+
+---
+
+## 17. Evidence Chain Summary
 
 Use this section to summarize the final traceable chain.
 
@@ -778,7 +820,7 @@ Reported Context
 
 ---
 
-## 17. AI Usage Record
+## 18. AI Usage Record
 
 Use this section to record where AI was used in the investigation.
 
@@ -809,7 +851,7 @@ Record hallucinations, unsupported claims, missed evidence, or useful behavior.
 
 ---
 
-## 18. Review Notes
+## 19. Review Notes
 
 ### Reviewer questions
 
@@ -831,7 +873,7 @@ Add reviewer comments here.
 
 ---
 
-## 19. Case Status
+## 20. Case Status
 
 | Field | Value |
 |---|---|
@@ -843,7 +885,7 @@ Add reviewer comments here.
 
 ---
 
-## 20. Revision History
+## 21. Revision History
 
 | Version | Date | Author | Change |
 |---|---|---|---|

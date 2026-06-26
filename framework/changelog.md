@@ -24,11 +24,70 @@ Example:
 v0.1 - Initial draft
 v0.2 - Evidence stage refinement
 v0.3 - Evidence preparation taxonomy
+v0.5 - Three-loop operating model
 v0.4 - Collection context and evidence package manifests
 v1.0 - First stable public framework
 ```
 
 ---
+
+## v0.5 - Three-Loop Operating Model
+
+**Date:** 2026-06-25  
+**Status:** Draft  
+**Stage:** Early research and validation
+
+### Summary
+
+Reframed EGATF from a straight-line chain into three related gated loops.
+
+The chain remains useful for teaching:
+
+```text
+Evidence -> Information -> Knowledge -> Insight -> Challenge -> Wisdom -> Decision -> Action -> Outcome -> Learning
+```
+
+The operating model is now:
+
+```text
+Loop 1: Evidence Loop
+Can we trust what we are reasoning from?
+
+Loop 2: Reasoning Loop
+Can we trust what we believe?
+
+Loop 3: Action Loop
+Can we trust what happened next?
+```
+
+### Added
+
+- Evidence Loop
+- Reasoning Loop
+- Action Loop
+- Evidence Sufficiency Gate
+- Challenge Confidence Gate
+- Outcome Validation Gate
+
+### Changed
+
+Updated the framework, terminology, process flow, stage deep dives, challenge evaluation, case template, diagrams, and slide deck to use the three-loop model consistently.
+
+### Rationale
+
+The original chain is helpful, but real troubleshooting is iterative. Investigations should not progress simply because a previous stage produced an answer.
+
+Each loop now has a gate that can stop progression and force rework:
+
+- Evidence Loop blocks reasoning from weak or misunderstood evidence.
+- Reasoning Loop blocks unsupported insights from becoming judgment.
+- Action Loop blocks closure when outcomes contradict the judgment.
+
+### Current Hypothesis
+
+The v0.5 hypothesis is:
+
+> The three-loop model makes EGATF more usable as an operating process because it gives practitioners clear gates that prevent weak evidence, unsupported reasoning, or contradictory outcomes from progressing unnoticed.
 
 ## v0.4 - Collection Context and Evidence Package Manifests
 

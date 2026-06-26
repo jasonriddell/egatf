@@ -1,0 +1,48 @@
+flowchart TD
+    A([Issue identified]) --> B[Reported Context]
+
+    subgraph L1[Loop 1: Evidence Loop - Can we trust what we are reasoning from?]
+      B --> C[Collection Context]
+      C --> D[Raw Source Material]
+      D --> E[Evidence Preparation]
+      E --> F[Prepared Evidence Base]
+      F --> G[Information]
+      G --> GATE1{Evidence Sufficiency Gate}
+      GATE1 -- More collection required --> D
+      GATE1 -- More preparation required --> E
+      GATE1 -- Collection context unclear --> C
+    end
+
+    GATE1 -- Evidence sufficient --> H[Knowledge]
+
+    subgraph L2[Loop 2: Reasoning Loop - Can we trust what we believe?]
+      H --> I[Insight]
+      I --> J[Challenge]
+      J --> GATE2{Challenge Confidence Gate}
+      GATE2 -- Weakened --> I
+      GATE2 -- Rejected --> I
+      GATE2 -- Split --> I
+      GATE2 -- More evidence required --> D
+      GATE2 -- Knowledge mismatch --> H
+      GATE2 -- Strengthened --> K[Wisdom / Judgment]
+    end
+
+    K --> K1{Confidence sufficient for decision?}
+    K1 -- No --> J
+    K1 -- More evidence needed --> D
+    K1 -- Yes --> L[Decision]
+
+    subgraph L3[Loop 3: Action Loop - Can we trust what happened next?]
+      L --> L1{Decision safe and authorized?}
+      L1 -- No --> L2[Escalate, seek approval, or reduce scope]
+      L2 --> L
+      L1 -- Yes --> M[Action]
+      M --> N[Outcome]
+      N --> GATE3{Outcome Validation Gate}
+      GATE3 -- Outcome supports judgment --> O[Learning]
+      GATE3 -- Outcome contradicts judgment --> J
+      GATE3 -- Outcome unclear --> D
+      GATE3 -- Partial outcome --> J
+    end
+
+    O --> P([Case closed or monitoring continues])

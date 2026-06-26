@@ -20,6 +20,52 @@ The research log records the thinking, investigation, and discovery process arou
 
 ---
 
+## 2026-06-25 - Three-Loop Operating Model
+
+**Type:** Framework refinement  
+**Status:** Recorded
+
+### Summary
+
+Reframed EGATF as three related gated loops rather than only a straight chain.
+
+The chain remains:
+
+```text
+Evidence -> Information -> Knowledge -> Insight -> Challenge -> Wisdom -> Decision -> Action -> Outcome -> Learning
+```
+
+The operating model is now:
+
+```text
+Evidence Loop:
+Can we trust what we are reasoning from?
+
+Reasoning Loop:
+Can we trust what we believe?
+
+Action Loop:
+Can we trust what happened next?
+```
+
+### Why It Matters
+
+A straight-line model can make the framework feel like a checklist. Real troubleshooting is iterative. The three-loop model makes the safety gates explicit.
+
+The key gates are:
+
+- Evidence Sufficiency Gate
+- Challenge Confidence Gate
+- Outcome Validation Gate
+
+These gates prevent progression when evidence is weak, reasoning is unsupported, or outcomes contradict the judgment.
+
+### Follow-up
+
+- Use the three-loop model in the first worked case study.
+- Validate whether the gates are understandable to support engineers and SREs.
+- Check whether the loops make the case template easier or heavier to use.
+
 ## 2026-06-24 - Collection Context Added
 
 **Type:** Framework refinement  
@@ -358,7 +404,8 @@ Potential article sequence:
 
 1. Why AI Troubleshooting Needs Evidence Grounding
 2. From Ticket Summary to Evidence: Avoiding Anchoring Bias
-3. Collection Context: Why Support Bundles Must Explain Themselves
+3. The Three Loops of Evidence-Grounded AI Troubleshooting
+4. Collection Context: Why Support Bundles Must Explain Themselves
 4. From Raw Source Material to Prepared Evidence
 5. Source Transformation Is Not Evidence Extraction
 6. Information Is Not Insight: Structuring Observations for AI

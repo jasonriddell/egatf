@@ -1,8 +1,14 @@
 # Evidence Preparation
 
 **Document type:** Framework detail  
-**Status:** Draft v0.4  
+**Status:** Draft v0.5  
 **Repository path:** `framework/evidence-preparation.md`
+
+---
+
+## Relationship to the Three-Loop Model
+
+Evidence Preparation belongs to the Evidence Loop. Its purpose is to make raw source material usable before the Reasoning Loop begins.
 
 ---
 
