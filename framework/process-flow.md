@@ -1,7 +1,7 @@
 # EGATF Process Flow
 
 **Document type:** Process overview  
-**Status:** Draft v0.6  
+**Status:** Draft v0.7  
 **Repository path:** `framework/process-flow.md`
 
 ---
@@ -151,19 +151,17 @@ Evidence insufficient
 Evidence unsuitable for the question being asked
 ```
 
-### Cold and Guided Analysis Sandbox Gate
+### Technique: Cold and Guided Analysis Sandboxes
 
-Question:
+Cold and guided analysis is a Reasoning Loop technique, not a gate. EGATF has exactly three gates.
 
-> Have cold analysis and guided analysis been separated and compared where anchoring risk matters?
-
-If no:
+Where anchoring risk matters:
 
 - Run a cold pass without the reported cause.
 - Run a guided pass with reported context as guidance, not proof.
 - Compare outputs before accepting insights.
 
-Loop:
+The Challenge Confidence Gate checks whether cold and guided analysis have been compared where useful.
 
 ```text
 Information -> Cold and guided sandbox analysis -> Insight or Challenge

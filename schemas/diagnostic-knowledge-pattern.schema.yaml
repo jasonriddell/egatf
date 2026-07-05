@@ -1,6 +1,6 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
-$title: "EGATF Diagnostic Knowledge Pattern"
-$type: object
+title: "EGATF Diagnostic Knowledge Pattern"
+type: object
 required:
   - schema_version
   - kind
@@ -169,14 +169,24 @@ properties:
 $defs:
   evidenceRequirement:
     type: object
-    required: [id, kind, evidence_class, source_role, time_relation]
+    required: [id, kind, evidence_classes, source_role, time_relation]
     properties:
       id:
         type: string
       kind:
         type: string
-      evidence_class:
-        type: string
+      evidence_classes:
+        type: array
+        minItems: 1
+        items:
+          type: string
+          enum:
+            - structured_source_material
+            - extracted_evidence
+            - derived_evidence
+            - correlated_evidence
+            - collection_context
+            - knowledge_validation
       source_role:
         type: array
         items:

@@ -37,7 +37,7 @@ They should be tracked separately from `cases/001-template.md` so that important
 | T-002 | Judgment terminology | Reasoning Loop | Complete for v0.6 | Replaces Wisdom with a practical human accountability term. | Watch for remaining old terminology in new docs. |
 | T-003 | Collection Context | Evidence Loop | Active | Prevents false correlations caused by support bundle timing confusion. | Test in synthetic support bundle case. |
 | T-004 | Evidence Preparation taxonomy | Evidence Loop | Active | Separates transformation, extraction, derivation, and correlation. | Validate with wtl and tablet report parser examples. |
-| T-005 | Cold and guided analysis isolation | Evidence Loop / Reasoning Loop | Active | Reduces anchoring bias and contamination between analysis passes. | Define sandbox rules and comparison output. |
+| T-005 | Cold and guided analysis isolation | Reasoning Loop | Active | Reduces anchoring bias and contamination between analysis passes. | Define sandbox rules and comparison output. |
 | T-006 | Reference knowledge validation | Reasoning Loop | Active | Prevents wrong-version docs, code, or cases from supporting insights. | Add validation checklist and apply to first case study. |
 | T-007 | Challenge confidence scoring | Reasoning Loop | Active | Determines whether insight can become Judgment. | Test Low / Medium / High and optional numeric scoring. |
 | T-008 | Diagnostic Knowledge Patterns | Knowledge / Reasoning Loop | Active | Captures reusable previous issue patterns without brittle `rg` matching. | Review schema and create first pattern. |

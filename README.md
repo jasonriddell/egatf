@@ -253,13 +253,15 @@ Additional principles:
 - `framework/` - Framework definitions, terminology, process flow, stage details, and change history
 - `schemas/` - Machine-readable schemas for framework artefacts
 - `knowledge-patterns/` - Reusable diagnostic knowledge patterns
+- `vocabulary/` - Semantic observation vocabulary
 - `research/` - Prior art, research notes, investigation threads, and references
 - `cases/` - Worked examples and validation exercises
-- `articles/` - Draft articles and publications
-- `paper/` - Whitepaper and formal publication drafts
 - `diagrams/` - Visual models and supporting graphics
 - `engineering/` - Engineering feature requests and implementation notes
-- `presentations/` - Optional slide decks and review presentations
+- `presentations/` - Slide decks and review presentations
+- `scripts/` - Repository consistency checks
+
+Planned directories, created when first needed: `articles/` for draft articles and publications, `paper/` for whitepaper and formal publication drafts.
 
 ---
 
@@ -293,6 +295,8 @@ Current diagnostic knowledge artefacts include:
 
 ```text
 schemas/diagnostic-knowledge-pattern.schema.yaml
+schemas/semantic-observation.schema.yaml
+vocabulary/semantic-observations.yaml
 knowledge-patterns/
 ```
 

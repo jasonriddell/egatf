@@ -1,7 +1,7 @@
 # Evidence-Grounded AI Troubleshooting Framework
 
 **Working acronym:** EGATF  
-**Status:** Draft v0.6  
+**Status:** Draft v0.7  
 **Document type:** Canonical framework definition  
 **Repository path:** `framework/framework.md`
 
@@ -210,7 +210,7 @@ If the answer is no or partial, the investigation loops back to Challenge or Evi
 
 ---
 
-## Primary Gates
+## 9. Primary Gates
 
 ### Gate 1: Evidence Sufficiency Gate
 
@@ -302,7 +302,7 @@ Open follow-up work
 ```
 ---
 
-## 9. Evidence Stage Detail
+## 10. Evidence Stage Detail
 
 The Evidence stage is not a single simple thing. At the beginning of a support investigation there may be a customer ticket summary, an alert title, a support bundle, logs, metrics, command output, and observations from engineers.
 
@@ -333,7 +333,7 @@ The Prepared Evidence Base may contain:
 
 ---
 
-## 10. Collection Context
+## 11. Collection Context
 
 Collection Context describes how an evidence package was created and how its contents should be interpreted.
 
@@ -356,7 +356,7 @@ Rule:
 
 ---
 
-## 11. Evidence Preparation
+## 12. Evidence Preparation
 
 Evidence Preparation makes raw source material easier to inspect, query, compare, and reason about while preserving provenance.
 
@@ -391,7 +391,7 @@ A tablet report parser that identifies leaderless, over-replicated, or under-rep
 
 ---
 
-## One-Line Stage Definitions
+## 13. One-Line Stage Definitions
 
 | Stage | One-line definition |
 |---|---|
@@ -411,7 +411,7 @@ A tablet report parser that identifies leaderless, over-replicated, or under-rep
 | Learning | Reusable knowledge captured from the investigation for future use. |
 ---
 
-## 12. Challenge as the Central Safety Mechanism
+## 14. Challenge as the Central Safety Mechanism
 
 Challenge is the deliberate attempt to test, weaken, disprove, or qualify an insight.
 
@@ -446,7 +446,7 @@ Only a strengthened or appropriately qualified insight should move toward Judgme
 
 ---
 
-## 13. Cold and Guided Analysis Sandboxes
+## 15. Cold and Guided Analysis Sandboxes
 
 Cold analysis and guided analysis are Reasoning Loop techniques for reducing anchoring risk.
 
@@ -472,7 +472,7 @@ The comparison should ask:
 - Did cold analysis miss a reported symptom that was later verified?
 - Which differences affect confidence?
 
-## 14. Reference Knowledge Validation
+## 16. Reference Knowledge Validation
 
 Knowledge sources should be validated before they are used to support an insight.
 
@@ -498,7 +498,7 @@ Validation should check:
 
 A knowledge source that is plausible but version-mismatched should lower confidence or force further validation.
 
-## 15. Evidence Chain Requirements
+## 17. Evidence Chain Requirements
 
 A well-formed EGATF investigation should allow a reviewer to trace backward from any decision to the evidence that supported it.
 
@@ -526,7 +526,7 @@ The evidence chain must show not only what supported the decision, but also what
 
 ---
 
-## 16. Non-Goals
+## 18. Non-Goals
 
 EGATF is not intended to be:
 
@@ -544,7 +544,7 @@ The framework is intended to improve reasoning discipline, not remove human resp
 
 ---
 
-## 17. Success Criteria
+## 19. Success Criteria
 
 The framework will be considered useful if it helps practitioners:
 
@@ -572,7 +572,7 @@ Important validation questions:
 
 ---
 
-## 18. Current Status
+## 20. Current Status
 
 This document is an early draft.
 
@@ -585,6 +585,7 @@ v0.3: Evidence preparation taxonomy
 v0.4: Collection context and evidence package manifests
 v0.5: Three-loop operating model and gates
 v0.6: Rename Wisdom to Judgment
+v0.7: Diagnostic Knowledge Patterns, semantic observation vocabulary, schemas, consistency fixes
 ```
 
 Future revisions should be recorded in `framework/changelog.md`.

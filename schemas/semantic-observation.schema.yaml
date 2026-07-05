@@ -1,6 +1,6 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
-$title: "EGATF Semantic Observation Vocabulary"
-$type: object
+title: "EGATF Semantic Observation Vocabulary"
+type: object
 required:
   - schema_version
   - kind
@@ -32,7 +32,15 @@ properties:
             type: string
         evidence_classes:
           type: array
+          minItems: 1
           items:
             type: string
+            enum:
+              - structured_source_material
+              - extracted_evidence
+              - derived_evidence
+              - correlated_evidence
+              - collection_context
+              - knowledge_validation
         timing_warning:
           type: string

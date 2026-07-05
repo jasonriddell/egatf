@@ -73,7 +73,7 @@ EGATF borrows the idea that raw material can be transformed through increasingly
 The EGATF sequence includes similar concepts:
 
 ```text
-Evidence → Information → Knowledge → Insight → Challenge → Wisdom
+Evidence → Information → Knowledge → Insight → Challenge → Judgment
 ```
 
 ### What EGATF Changes
@@ -83,7 +83,7 @@ EGATF differs from classic DIKW in several ways:
 1. It begins with **Evidence** rather than generic **Data**.
 2. It adds **Insight** as a hypothesis-generating stage.
 3. It adds **Challenge** as a formal pressure-testing stage.
-4. It extends beyond wisdom into **Decision**, **Action**, **Outcome**, and **Learning**.
+4. It extends beyond judgment into **Decision**, **Action**, **Outcome**, and **Learning**.
 5. It is designed for AI-assisted troubleshooting rather than general knowledge management.
 
 ### Why This Matters
@@ -511,7 +511,7 @@ EGATF should not claim to have invented:
 The potential originality appears to be in the combination and operational packaging:
 
 ```text
-Evidence → Information → Knowledge → Insight → Challenge → Wisdom → Decision → Action → Outcome → Learning
+Evidence → Information → Knowledge → Insight → Challenge → Judgment → Decision → Action → Outcome → Learning
 ```
 
 Especially:

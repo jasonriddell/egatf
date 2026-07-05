@@ -27,8 +27,42 @@ v0.3 - Evidence preparation taxonomy
 v0.4 - Collection context and evidence package manifests
 v0.5 - Three-loop operating model
 v0.6 - Judgment terminology update
+v0.7 - Diagnostic knowledge patterns and consistency fixes
 v1.0 - First stable public framework
 ```
+
+---
+
+## v0.7 - Diagnostic Knowledge Patterns and Consistency Fixes
+
+**Date:** 2026-07-05  
+**Status:** Draft  
+**Stage:** Early research and validation
+
+### Summary
+
+Formally records the Diagnostic Knowledge Pattern work that landed after v0.6, and applies a set of consistency fixes found during a full repository review.
+
+### Added
+
+- Diagnostic Knowledge Pattern framework document: `framework/diagnostic-knowledge-patterns.md`.
+- Diagnostic Knowledge Pattern schema: `schemas/diagnostic-knowledge-pattern.schema.yaml`.
+- Semantic observation vocabulary and schema: `vocabulary/semantic-observations.yaml`, `schemas/semantic-observation.schema.yaml`.
+- First example pattern: `knowledge-patterns/ybdb.raft.leader-instability.client-timeouts.dkp.yaml`.
+- Repository consistency check script: `scripts/lint.py`. It validates patterns and vocabulary against their schemas, cross-checks observation kinds and evidence classes, and scans for terminology drift.
+
+### Changed
+
+- Completed the Wisdom to Judgment rename in `research/prior-art.md`, which was missed in v0.6.
+- Replaced the free-text `evidence_class` field in the pattern schema with an `evidence_classes` array constrained to the canonical evidence class values. Updated the example pattern to match.
+- Corrected non-standard `$title` and `$type` keywords in both schemas to `title` and `type` so validators enforce them.
+- Clarified that EGATF has exactly three gates. Cold and guided analysis is a Reasoning Loop technique checked by the Challenge Confidence Gate, not a fourth gate. `framework/process-flow.md` updated accordingly, and thread T-005 reattributed to the Reasoning Loop.
+- Renumbered `framework/framework.md` sections so all sections are numbered consistently.
+- Renamed `presentation collateral/` to `presentations/` and aligned the README repository structure with the directories that actually exist.
+
+### Versioning Convention
+
+Documents carry the framework version at which they were last materially changed. A document stamped v0.6 is current unless the changelog says otherwise.
 
 ---
 

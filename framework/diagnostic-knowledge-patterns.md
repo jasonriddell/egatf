@@ -1,7 +1,7 @@
 # Diagnostic Knowledge Patterns
 
 **Document type:** Framework detail  
-**Status:** Draft v0.1  
+**Status:** Draft v0.7  
 **Repository path:** `framework/diagnostic-knowledge-patterns.md`
 
 ---

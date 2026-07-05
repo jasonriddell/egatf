@@ -53,7 +53,9 @@ evidence_requirements:
   required:
     - id: e1
       kind: client.timeout_increase
-      evidence_class: extracted_or_correlated
+      evidence_classes:
+        - extracted_evidence
+        - correlated_evidence
       source_role:
         - client_logs
         - ysql_logs
@@ -64,7 +66,9 @@ evidence_requirements:
 
     - id: e2
       kind: raft.leader_instability
-      evidence_class: extracted_or_derived
+      evidence_classes:
+        - extracted_evidence
+        - derived_evidence
       source_role:
         - master_logs
         - tserver_logs
@@ -75,7 +79,8 @@ evidence_requirements:
   optional:
     - id: e3
       kind: tablet.leaderless
-      evidence_class: derived
+      evidence_classes:
+        - derived_evidence
       source_role:
         - tablet_report
         - consensus_meta
@@ -86,7 +91,8 @@ evidence_requirements:
 
     - id: e4
       kind: tablet.under_replicated
-      evidence_class: derived
+      evidence_classes:
+        - derived_evidence
       source_role:
         - tablet_report
         - master_metadata
