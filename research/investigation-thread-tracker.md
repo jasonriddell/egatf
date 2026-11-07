@@ -45,6 +45,11 @@ They should be tracked separately from `cases/001-template.md` so that important
 | T-010 | Adapter layer for tools | Evidence Preparation | Backlog | Maps bundle/tool outputs into semantic observations. | Define adapter examples for wtl and tablet report parser. |
 | T-011 | Support bundle manifest improvements | Evidence Loop / Engineering | Active | Makes evidence packages self-describing for humans, tools, and AI. | Socialize Jira proposal. |
 | T-012 | Case study template validation | All loops | Active | Tests whether EGATF is usable in practice. | Run first synthetic support bundle case. |
+| T-015 | Validation design and first worked case | All loops | Active | The framework is untested until a case is run. | Run one sanitized, time-sliced case per `research/validation-design.md`. |
+| T-016 | Mitigation, risk profiles, stop rules | Action Loop | Active | Real incidents mitigate before they diagnose. | Test the Lite profile on the first case. |
+| T-017 | Hypothesis matrix and causal claim standard | Reasoning Loop | Active | Replaces single-insight challenge and numeric scoring. | Use the matrix on the first case and report friction. |
+| T-018 | Case-record schema | All loops | Active | Makes traceability machine-checkable. | Convert the first case to a case record. |
+| T-019 | Publication readiness (licence, IP, sensitivity) | External | Blocked | Needs the author's decisions. | Resolve P-1 to P-6 in `research/publication-readiness.md`. |
 | T-013 | Publication strategy | Learning / External | Deferred | Determines when to publish article, whitepaper, or GitHub. | Wait until first case study is complete. |
 | T-014 | Tooling strategy | Evidence Preparation / Knowledge | Deferred | Avoids building tools before framework stabilizes. | Revisit after 2 to 3 worked cases. |
 

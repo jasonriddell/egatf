@@ -1,7 +1,7 @@
 # Challenge Evaluation
 
 **Document type:** Stage detail  
-**Status:** Draft v0.6  
+**Status:** Draft v0.8  
 **Repository path:** `framework/challenge-evaluation.md`
 
 ---
@@ -135,6 +135,85 @@ Use these dimensions.
 
 ---
 
+## Hypothesis Matrix
+
+Challenging one insight at a time hides the question that matters most: is there a better explanation? From v0.8 every Challenge works on a **hypothesis set**, not a single insight.
+
+Rows are evidence items (and information statements and knowledge sources). Columns are hypotheses, including the alternatives from the Insight stage. Each cell is one of:
+
+```text
+supports | contradicts | neutral | not applicable
+```
+
+Rules:
+
+- Every alternative gets the same treatment as the leading hypothesis. "A stronger alternative exists" is decided by the matrix, not by impression.
+- Hypotheses are not exclusive. Contributing or multiple causes are recorded as separate hypotheses that may all be strengthened, or as a combined hypothesis created after challenge.
+- Evidence that supports no hypothesis is recorded as **unexplained evidence**. It is a prompt for a new hypothesis, not noise to be discarded.
+- A piece of evidence that supports every hypothesis equally has no discriminating power. Say so.
+- Diagnostic power matters more than volume: prefer evidence that separates the leading hypotheses.
+- In a case record the matrix is derived from `supports` and `contradicts` edges (`schemas/case-record.schema.yaml`), so it cannot drift from the evidence chain.
+
+Template:
+
+| Evidence | H-001 | H-002 | H-003 |
+|---|---|---|---|
+| EV-001 | supports | supports | neutral |
+| EV-002 | contradicts | neutral | supports |
+
+---
+
+## Challenger Independence
+
+A Challenge is weaker when the challenger shares the generator's blind spots. Record who or what ran it (`challenger`, `independent_of_generator` in the case record).
+
+- A model challenging its own hypothesis from the same context is a **self-check**, useful but not independent.
+- A different model, a different prompt role, or a human reviewer who has not seen the generator's reasoning is more independent.
+- Both cold and guided passes reading the same prepared evidence share any preparation error. Agreement between them does not remove it.
+- The High-assurance profile requires an independent challenger (see `mitigation-and-stop-rules.md`).
+
+---
+
+## Outcome Confounding
+
+At the Outcome Validation Gate, an improvement does not automatically support the Judgment. Restarts, failovers and load changes can clear symptoms whatever the cause was.
+
+Record for each outcome:
+
+- Which other changes happened in the same period (`confounders`).
+- What the Judgment predicted that the action would change, and what it predicted would stay the same.
+- Whether the result could have been produced by a competing hypothesis.
+
+An outcome that every hypothesis predicts is `inconclusive`, not `supported`.
+
+---
+
+## Causal Claim Standard
+
+EGATF does not forbid causal conclusions; it says when each level of claim is earned.
+
+| Claim level | Wording | Earned when |
+|---|---|---|
+| `consistent_with` | "The evidence is consistent with X." | A pattern or hypothesis fits supporting evidence and nothing contradicts it. |
+| `supported_cause` | "X most likely caused Y." | Required evidence is present and time-compatible, the timeline order holds, version-correct knowledge supports the mechanism, and the matrix shows no equally strong alternative. |
+| `established_cause` | "X caused Y." | All of the above, plus a discriminating test: a prediction that competing hypotheses did not make came true, or an intervention changed the outcome in the predicted way with confounders addressed. |
+
+A Diagnostic Knowledge Pattern may only produce `consistent_with` on its own. Moving up requires Challenge on the case evidence.
+
+A framework that can never conclude cannot fail. This standard is what makes a wrong `supported_cause` or `established_cause` detectable.
+
+---
+
+## Confidence Propagation
+
+Confidence appears in several places. They are related as follows.
+
+1. **Evidence reliability** is a property of the evidence and its preparation. It limits everything downstream and is not averaged away.
+2. **Pattern confidence** (`confidence_model` in a pattern) is a *prior input* to Challenge, never a result.
+3. **Confidence after challenge** is the only confidence that gates Judgment.
+4. **Judgment confidence** may be equal to or lower than confidence after challenge. It may not be higher.
+5. **Decision risk tolerance** compares Judgment confidence with the blast radius of the action (see the blocking conditions below).
+
 ## Suggested Confidence Scoring
 
 The framework can use either simple labels or a numeric score.
@@ -157,9 +236,11 @@ Definitions:
 | Medium | Insight is plausible and partially supported, but uncertainty remains. Use for cautious decisions or further investigation. |
 | High | Insight is strongly supported, not meaningfully contradicted, time-compatible, version-compatible, and alternatives are weaker. |
 
-### Numeric Support Model
+### Numeric Support Model (deprecated in v0.8)
 
-Optional numeric model:
+The numeric model is retained for reference. It is **not recommended**: it sums ordinal judgments as if they were interval measures, treats dimensions that were not run (for example cold versus guided) as neutral and so drags the total, and gives false precision. Use the hypothesis matrix and the Low / Medium / High labels with a written reason instead.
+
+Original model:
 
 | Dimension result | Score |
 |---|---:|
@@ -204,6 +285,8 @@ If the claimed cause happened after the effect, the insight should usually be re
 ---
 
 ## Cold and Guided Sandbox Comparison
+
+Diagnostic Knowledge Patterns are a source of anchoring. They must not be available to the cold pass (see Cold Pass Isolation in `framework.md`).
 
 When cold and guided analyses are used, Challenge should compare them explicitly.
 

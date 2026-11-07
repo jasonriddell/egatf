@@ -1,7 +1,7 @@
 # Diagnostic Knowledge Patterns
 
 **Document type:** Framework detail  
-**Status:** Draft v0.7  
+**Status:** Draft v0.8  
 **Repository path:** `framework/diagnostic-knowledge-patterns.md`
 
 ---
@@ -109,13 +109,18 @@ Better example:
 pattern:
   evidence_requirements:
     required:
-      - kind: client.timeout_increase
-        evidence_class: extracted_or_correlated
-        time_relation: during_impact_window
+      - id: e1
+        kind: client.timeout_increase
+        evidence_classes: [extracted_evidence, correlated_evidence]
+        time_relation:
+          relation: during_impact_window
 
-      - kind: raft.leader_instability
-        evidence_class: extracted_or_derived
-        time_relation: overlaps_or_precedes:client.timeout_increase
+      - id: e2
+        kind: raft.leader_instability
+        evidence_classes: [extracted_evidence, derived_evidence]
+        time_relation:
+          relation: overlaps_or_precedes
+          ref: e1
 ```
 
 This describes the evidence needed to support a candidate insight without specifying how that evidence must be extracted.
@@ -283,8 +288,9 @@ Example:
 ```yaml
 - id: e1
   kind: raft.leader_instability
-  evidence_class: extracted_or_derived
-  time_relation: during_or_before_impact_window
+  evidence_classes: [extracted_evidence, derived_evidence]
+  time_relation:
+    relation: before_or_during_impact_window
 ```
 
 ### Contradicting Evidence
@@ -414,6 +420,31 @@ confidence_model:
       - stronger_alternative_exists
       - required_observation_missing
 ```
+
+---
+
+### Evaluating the Confidence Model
+
+Rule lists are evaluated in the order **reject, low, high, medium**; the first level that matches wins.
+
+- `reject.if`: any listed condition rejects the pattern for this case.
+- `low.if`: any listed condition limits confidence to Low.
+- `high.requires`: all listed conditions must hold.
+- `medium.allows`: conditions that do not prevent Medium when High is not met.
+
+This is a prior for Challenge. It never replaces confidence after challenge, and a pattern alone yields at most the claim level `consistent_with` (see the Causal Claim Standard in `challenge-evaluation.md`).
+
+### Absence and Contradiction
+
+Contradicting evidence such as `stable_leadership_during_impact` is evidence of *absence*. It may only be asserted when coverage of the relevant window is adequate. Otherwise record `metrics.coverage_gap` and treat the result as unknown. The vocabulary's `contradiction_kinds` carry this requirement in `absence_semantics`.
+
+### Pattern Library Bias
+
+Patterns learned only from cases where the Judgment was supported will over-represent what was easy to confirm. Cases that were refuted, unresolved, or closed with a different cause are inputs to the library: record them as contradicting evidence, new contradiction kinds, or retired patterns. Patterns have `status`, `last_reviewed` and version bounds so they can expire. A pattern that is not `draft` must have version bounds and a review date (checked by `scripts/lint.py`).
+
+### Cold Pass Isolation
+
+Patterns are not visible to the cold analysis pass. They name the hypotheses to look for, so they are a source of anchoring.
 
 ---
 

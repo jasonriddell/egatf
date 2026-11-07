@@ -1,0 +1,229 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: "EGATF Case Record"
+description: >
+  Machine-checkable traceability for one EGATF investigation. Nodes carry typed IDs;
+  edges carry typed relations. The evidence-by-hypothesis matrix is derived from
+  'supports' and 'contradicts' edges rather than maintained by hand. Referential
+  integrity and edge-type compatibility are checked by scripts/lint.py.
+type: object
+additionalProperties: false
+required: [schema_version, kind, case]
+properties:
+  schema_version: {type: string}
+  kind: {type: string, const: case_record}
+  case:
+    type: object
+    additionalProperties: false
+    required: [id, title, case_type, sensitivity, egatf_version]
+    properties:
+      id: {type: string}
+      title: {type: string}
+      case_type: {type: string, enum: [real, synthetic, sanitized, public_incident]}
+      sensitivity: {type: string, enum: [public, internal, confidential, sanitized]}
+      egatf_version: {type: string}
+      analyst: {type: string}
+      reviewers: {type: array, items: {type: string}}
+      evidence_cutoff:
+        type: string
+        description: Timestamp after which no evidence may be used (time-sliced replay of historical cases).
+  reported_claims:     {type: array, items: {$ref: "#/$defs/node_R"}}
+  collection_context:  {type: array, items: {$ref: "#/$defs/node_CC"}}
+  raw_sources:         {type: array, items: {$ref: "#/$defs/node_RS"}}
+  preparation:         {type: array, items: {$ref: "#/$defs/node_PE"}}
+  evidence:            {type: array, items: {$ref: "#/$defs/node_EV"}}
+  information:         {type: array, items: {$ref: "#/$defs/node_INF"}}
+  knowledge:           {type: array, items: {$ref: "#/$defs/node_KN"}}
+  hypotheses:          {type: array, items: {$ref: "#/$defs/node_H"}}
+  challenges:          {type: array, items: {$ref: "#/$defs/node_CH"}}
+  judgments:           {type: array, items: {$ref: "#/$defs/node_J"}}
+  mitigations:         {type: array, items: {$ref: "#/$defs/node_M"}}
+  decisions:           {type: array, items: {$ref: "#/$defs/node_D"}}
+  actions:             {type: array, items: {$ref: "#/$defs/node_A"}}
+  outcomes:            {type: array, items: {$ref: "#/$defs/node_O"}}
+  learnings:           {type: array, items: {$ref: "#/$defs/node_L"}}
+  gate_events:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [gate, outcome]
+      properties:
+        gate: {type: string, enum: [evidence_sufficiency, challenge_confidence, outcome_validation]}
+        outcome: {type: string}
+        at: {type: string}
+        notes: {type: string}
+  edges:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [from, to, type]
+      properties:
+        from: {type: string}
+        to: {type: string}
+        type:
+          type: string
+          enum:
+            - supports
+            - contradicts
+            - derived_from
+            - produced_by
+            - described_by
+            - guided_by
+            - validated_against
+            - alternative_to
+            - justifies
+            - decided_on
+            - executed_as
+            - measured
+            - tests
+            - yields
+        note: {type: string}
+$defs:
+  confidence: {type: string, enum: [low, medium, high]}
+  base:
+    type: object
+    required: [id, summary]
+  node_R:
+    type: object
+    additionalProperties: false
+    required: [id, summary, claim_kind]
+    properties:
+      id: {type: string, pattern: "^R-[0-9]{3}$"}
+      summary: {type: string}
+      claim_kind: {type: string, enum: [symptom, timeline, component, causal]}
+  node_CC:
+    type: object
+    additionalProperties: false
+    required: [id, summary]
+    properties:
+      id: {type: string, pattern: "^CC-[0-9]{3}$"}
+      summary: {type: string}
+      window_semantics: {type: string, enum: [requested_duration, collection_time_snapshot, metrics_specific, mixed]}
+  node_RS:
+    type: object
+    additionalProperties: false
+    required: [id, summary]
+    properties:
+      id: {type: string, pattern: "^RS-[0-9]{3}$"}
+      summary: {type: string}
+      path: {type: string}
+  node_PE:
+    type: object
+    additionalProperties: false
+    required: [id, summary, step]
+    properties:
+      id: {type: string, pattern: "^PE-[0-9]{3}$"}
+      summary: {type: string}
+      step: {type: string, enum: [collection, transformation, parsing, normalization, indexing, extraction, derivation, correlation]}
+      tool: {type: string}
+      tool_version: {type: string}
+      deterministic: {type: boolean}
+      quality_check: {type: string}
+  node_EV:
+    type: object
+    additionalProperties: false
+    required: [id, summary, evidence_class]
+    properties:
+      id: {type: string, pattern: "^EV-[0-9]{3}$"}
+      summary: {type: string}
+      evidence_class:
+        type: string
+        enum: [structured_source_material, extracted_evidence, derived_evidence, correlated_evidence]
+      observation_kind: {type: string}
+      window_semantics: {type: string, enum: [requested_duration, collection_time_snapshot, metrics_specific, mixed]}
+  node_INF:
+    type: object
+    additionalProperties: false
+    required: [id, summary]
+    properties:
+      id: {type: string, pattern: "^INF-[0-9]{3}$"}
+      summary: {type: string}
+  node_KN:
+    type: object
+    additionalProperties: false
+    required: [id, summary, source_type, version_applies]
+    properties:
+      id: {type: string, pattern: "^KN-[0-9]{3}$"}
+      summary: {type: string}
+      source_type: {type: string, enum: [documentation, source_code, release_notes, known_issue, runbook, previous_case, diagnostic_knowledge_pattern, domain_expertise]}
+      version_applies: {type: string, enum: ["yes", "no", "unknown"]}
+  node_H:
+    type: object
+    additionalProperties: false
+    required: [id, summary, status]
+    properties:
+      id: {type: string, pattern: "^H-[0-9]{3}$"}
+      summary: {type: string}
+      status: {type: string, enum: [candidate, strengthened, weakened, rejected, split, superseded]}
+      confidence: {$ref: "#/$defs/confidence"}
+      assumptions: {type: array, items: {type: string}}
+      origin: {type: string, enum: [cold, guided, pattern, human]}
+  node_CH:
+    type: object
+    additionalProperties: false
+    required: [id, summary, result]
+    properties:
+      id: {type: string, pattern: "^CH-[0-9]{3}$"}
+      summary: {type: string}
+      result: {type: string, enum: [strengthened, weakened, rejected, split, more_evidence_required]}
+      challenger: {type: string, description: Who or what ran the challenge (person, or model plus role).}
+      independent_of_generator: {type: boolean}
+  node_J:
+    type: object
+    additionalProperties: false
+    required: [id, summary, owner, confidence]
+    properties:
+      id: {type: string, pattern: "^J-[0-9]{3}$"}
+      summary: {type: string}
+      owner: {type: string}
+      confidence: {$ref: "#/$defs/confidence"}
+      claim_level: {type: string, enum: [consistent_with, supported_cause, established_cause]}
+  node_M:
+    type: object
+    additionalProperties: false
+    required: [id, summary, reversible, authorizer]
+    properties:
+      id: {type: string, pattern: "^M-[0-9]{3}$"}
+      summary: {type: string}
+      reversible: {type: boolean}
+      authorizer: {type: string}
+      confidence_at_time: {$ref: "#/$defs/confidence"}
+      time_box: {type: string}
+      diagnostic_value: {type: string, description: Whether the mitigation also discriminates between hypotheses.}
+  node_D:
+    type: object
+    additionalProperties: false
+    required: [id, summary, owner]
+    properties:
+      id: {type: string, pattern: "^D-[0-9]{3}$"}
+      summary: {type: string}
+      owner: {type: string}
+      reversible: {type: boolean}
+      blast_radius: {type: string}
+      authorizer: {type: string}
+  node_A:
+    type: object
+    additionalProperties: false
+    required: [id, summary]
+    properties:
+      id: {type: string, pattern: "^A-[0-9]{3}$"}
+      summary: {type: string}
+      at: {type: string}
+  node_O:
+    type: object
+    additionalProperties: false
+    required: [id, summary, judgment_effect]
+    properties:
+      id: {type: string, pattern: "^O-[0-9]{3}$"}
+      summary: {type: string}
+      judgment_effect: {type: string, enum: [supported, weakened, contradicted, inconclusive]}
+      confounders: {type: array, items: {type: string}}
+  node_L:
+    type: object
+    additionalProperties: false
+    required: [id, summary]
+    properties:
+      id: {type: string, pattern: "^L-[0-9]{3}$"}
+      summary: {type: string}
+      feeds_pattern: {type: string}

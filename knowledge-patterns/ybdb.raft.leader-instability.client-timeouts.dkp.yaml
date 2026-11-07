@@ -62,7 +62,8 @@ evidence_requirements:
         - ycql_logs
         - application_logs
         - metrics
-      time_relation: during_impact_window
+      time_relation:
+        relation: during_impact_window
 
     - id: e2
       kind: raft.leader_instability
@@ -72,9 +73,9 @@ evidence_requirements:
       source_role:
         - master_logs
         - tserver_logs
-        - tablet_report
-        - consensus_meta
-      time_relation: overlaps_or_precedes:e1
+      time_relation:
+        relation: overlaps_or_precedes
+        ref: e1
 
   optional:
     - id: e3
@@ -84,7 +85,8 @@ evidence_requirements:
       source_role:
         - tablet_report
         - consensus_meta
-      time_relation: collection_time_snapshot
+      time_relation:
+        relation: collection_time_snapshot
       warning: >
         If tablet_report or consensus_meta is a collection-time snapshot, do not use it as proof
         of tablet state during a historical impact window.
@@ -96,7 +98,8 @@ evidence_requirements:
       source_role:
         - tablet_report
         - master_metadata
-      time_relation: collection_time_snapshot_or_impact_window
+      time_relation:
+        relation: collection_time_snapshot_or_impact_window
       warning: >
         Under-replication from a collection-time report may explain current state but not
         necessarily historical customer impact.

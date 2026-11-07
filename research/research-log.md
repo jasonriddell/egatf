@@ -455,3 +455,27 @@ Potential article sequence:
 11. From Decision to Action Without Losing the Evidence Chain
 12. Learning Loops: Turning Incidents into Future Diagnostic Memory
 13. Evidence-Grounded AI Troubleshooting: A Worked Example
+
+## 2026-11-07 - Structured Review and v0.8 Follow-ups
+
+**Type:** Review  
+**Status:** Recorded
+
+### Summary
+
+A structured review of the repository, with an independent Opus 5.5 advisor pass that challenged the first reviewer's findings, produced the v0.8 changes (see `framework/changelog.md`).
+
+### Main findings
+
+- The framework has not been tested on a case; validation design added.
+- Challenge scored one insight at a time and could not compare hypotheses; hypothesis matrix added.
+- No path for mitigation before diagnosis and no termination criteria; stop rules and risk profiles added.
+- The framework could not conclude a cause; a claim-level standard added.
+- Traceability lived in markdown tables; case-record schema added.
+- Several schema and lint weaknesses fixed.
+
+### Follow-up
+
+- Run the first worked case.
+- Author decisions on licence, employer IP and sensitivity (`research/publication-readiness.md`).
+

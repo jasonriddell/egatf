@@ -1,7 +1,7 @@
 # Evidence-Grounded AI Troubleshooting Framework
 
 **Working acronym:** EGATF  
-**Status:** Draft v0.7  
+**Status:** Draft v0.8  
 **Document type:** Canonical framework definition  
 **Repository path:** `framework/framework.md`
 
@@ -41,12 +41,12 @@ Can AI-assisted troubleshooting be made more reliable by requiring every conclus
 
 ## 4. Core Principle
 
-Every insight must be traceable to evidence, and every piece of evidence must be traceable to the insight it supports.
+Every insight must be traceable to evidence, and every piece of evidence cited in support of an insight must be traceable to its source.
 
 This means:
 
 - No insight should stand alone without supporting evidence.
-- No evidence should be used without clear relevance.
+- No evidence should be used to support a claim without clear relevance. Evidence that supports no current insight is not discarded; it is recorded as unexplained evidence, because it may point to a hypothesis nobody has formed yet.
 - No conclusion should be accepted until it has been challenged.
 - No action should be taken solely because an explanation sounds plausible.
 - Reported context should guide investigation, not replace verification.
@@ -97,6 +97,8 @@ Can we trust what happened next?
 | Action Loop | Decision, Action, Outcome, Learning | Outcome Validation Gate | Did the action produce the expected outcome, and what should be learned or revisited? |
 
 Information intentionally appears at the boundary between the Evidence Loop and the Reasoning Loop. It is the point where prepared evidence becomes meaningful enough to support reasoning, but it should still stop short of diagnosis.
+
+Judgment is a human assessment with a named owner. Mitigation under uncertainty, risk profiles, and stop rules are defined in `framework/mitigation-and-stop-rules.md`. They add no gate.
 
 ## 6. Loop 1: Evidence Loop
 
@@ -217,6 +219,8 @@ If the answer is no or partial, the investigation loops back to Challenge or Evi
 Question:
 
 > Do we understand the evidence well enough to reason from it?
+
+Scope note: before any hypothesis exists, this gate tests whether the evidence is understood, traceable and time-compatible (its integrity and fitness for the question). Whether it is *sufficient to discriminate between hypotheses* can only be judged once hypotheses exist, and is tested at the Challenge Confidence Gate through "more evidence required".
 
 This gate prevents progression when evidence is missing, misunderstood, poorly prepared, not traceable, or not time-compatible.
 
@@ -457,6 +461,8 @@ For stronger validation, these two passes should be run in isolated analysis san
 An isolated analysis sandbox means:
 
 - The cold pass does not receive the customer theory, reported cause, or guided prompt.
+- The cold pass does not receive Diagnostic Knowledge Patterns. Patterns are a Knowledge source and name the hypotheses to look for.
+- Evidence Preparation for the cold pass is not scoped by the reported context or by pattern-driven adapters, because extraction selects observations and selection can pre-anchor the pass.
 - The guided pass receives the reported context as guidance, not proof.
 - The outputs are recorded separately.
 - The comparison is performed after both outputs exist.
@@ -586,6 +592,7 @@ v0.4: Collection context and evidence package manifests
 v0.5: Three-loop operating model and gates
 v0.6: Rename Wisdom to Judgment
 v0.7: Diagnostic Knowledge Patterns, semantic observation vocabulary, schemas, consistency fixes
+v0.8: Hypothesis matrix, causal claim standard, mitigation and stop rules, case-record schema, validation design
 ```
 
 Future revisions should be recorded in `framework/changelog.md`.

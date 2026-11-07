@@ -1,0 +1,68 @@
+# SYNTHETIC. Invented for schema and lint testing only. Not a real investigation
+# and not validation evidence for EGATF.
+schema_version: "0.1"
+kind: case_record
+case:
+  id: SYN-001
+  title: Synthetic timeouts with a collection-time tablet report
+  case_type: synthetic
+  sensitivity: public
+  egatf_version: v0.8
+  analyst: example
+
+reported_claims:
+  - {id: R-001, summary: Customer reports client timeouts during a four hour window, claim_kind: symptom}
+  - {id: R-002, summary: Customer believes leaderless tablets caused the timeouts, claim_kind: causal}
+
+collection_context:
+  - {id: CC-001, summary: "Logs cover the requested window; the tablet report was taken at bundle creation, five days later", window_semantics: mixed}
+
+raw_sources:
+  - {id: RS-001, summary: tserver logs for the requested window}
+  - {id: RS-002, summary: tablet report taken at bundle creation}
+
+preparation:
+  - {id: PE-001, summary: Structure tserver logs, step: transformation, deterministic: true}
+  - {id: PE-002, summary: Compute leaderless tablets from the tablet report, step: derivation, deterministic: true}
+
+evidence:
+  - {id: EV-001, summary: Client timeout rate rose during the window, evidence_class: extracted_evidence, observation_kind: client.timeout_increase, window_semantics: requested_duration}
+  - {id: EV-002, summary: Three tablets are leaderless in the tablet report, evidence_class: derived_evidence, observation_kind: tablet.leaderless, window_semantics: collection_time_snapshot}
+  - {id: EV-003, summary: Disk latency rose on one node during the window, evidence_class: extracted_evidence, observation_kind: node.disk_latency_increase, window_semantics: requested_duration}
+
+information:
+  - {id: INF-001, summary: Timeouts and disk latency rise overlap in time}
+
+knowledge:
+  - {id: KN-001, summary: Pattern for leader instability with client timeouts, source_type: diagnostic_knowledge_pattern, version_applies: unknown}
+
+hypotheses:
+  - {id: H-001, summary: Leaderless tablets caused the timeouts, status: weakened, confidence: low, origin: guided}
+  - {id: H-002, summary: Disk latency on one node caused the timeouts, status: candidate, confidence: medium, origin: cold}
+
+challenges:
+  - {id: CH-001, summary: Tablet report is a collection-time snapshot and cannot show tablet state in the window, result: weakened, challenger: reviewer, independent_of_generator: true}
+
+mitigations:
+  - {id: M-001, summary: Move load off the slow node, reversible: true, authorizer: on-call lead, confidence_at_time: low, time_box: 30m, diagnostic_value: Distinguishes H-002 from H-001}
+
+edges:
+  - {from: RS-001, to: CC-001, type: described_by}
+  - {from: RS-002, to: CC-001, type: described_by}
+  - {from: EV-001, to: PE-001, type: produced_by}
+  - {from: EV-002, to: PE-002, type: produced_by}
+  - {from: EV-002, to: RS-002, type: derived_from}
+  - {from: INF-001, to: EV-001, type: derived_from}
+  - {from: INF-001, to: EV-003, type: derived_from}
+  - {from: H-001, to: R-002, type: guided_by}
+  - {from: EV-002, to: H-001, type: supports, note: Weak; wrong time window}
+  - {from: EV-001, to: H-001, type: supports}
+  - {from: EV-003, to: H-002, type: supports}
+  - {from: EV-001, to: H-002, type: supports}
+  - {from: H-001, to: H-002, type: alternative_to}
+  - {from: KN-001, to: H-001, type: supports}
+  - {from: CH-001, to: H-001, type: tests}
+
+gate_events:
+  - {gate: evidence_sufficiency, outcome: proceed, notes: Snapshot limitation recorded}
+  - {gate: challenge_confidence, outcome: more_evidence_required, notes: No time-aligned tablet state}
