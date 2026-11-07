@@ -16,6 +16,8 @@ properties:
     type: string
   purpose:
     type: string
+  contract_note:
+    type: string
   observation_kinds:
     type: object
     additionalProperties:
@@ -30,9 +32,11 @@ properties:
           type: object
           description: >
             Operational meaning of the observation, so two adapters cannot emit
-            the same kind with different semantics. Not yet populated for the v0.1 kinds.
+            the same kind with different semantics. Values marked provisional are illustrative.
           additionalProperties: false
+          required: [status, definition, threshold]
           properties:
+            status: {type: string, enum: [provisional, validated]}
             definition: {type: string}
             baseline: {type: string}
             threshold: {type: string}
