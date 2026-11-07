@@ -260,6 +260,7 @@ Additional principles:
 - `engineering/` - Engineering feature requests and implementation notes
 - `presentations/` - Slide decks and review presentations
 - `scripts/` - Repository consistency checks
+- `schemas/` - JSON Schemas for patterns, vocabulary and case records
 
 Planned directories, created when first needed: `articles/` for draft articles and publications, `paper/` for whitepaper and formal publication drafts.
 
@@ -278,6 +279,7 @@ framework/challenge-evaluation.md
 framework/evidence-preparation.md
 framework/collection-context.md
 framework/diagnostic-knowledge-patterns.md
+framework/mitigation-and-stop-rules.md
 framework/changelog.md
 ```
 
@@ -289,6 +291,8 @@ research/research-log.md
 research/prior-art.md
 research/bibliography.md
 research/investigation-thread-tracker.md
+research/validation-design.md
+research/publication-readiness.md
 ```
 
 Current diagnostic knowledge artefacts include:
@@ -296,6 +300,7 @@ Current diagnostic knowledge artefacts include:
 ```text
 schemas/diagnostic-knowledge-pattern.schema.yaml
 schemas/semantic-observation.schema.yaml
+schemas/case-record.schema.yaml
 vocabulary/semantic-observations.yaml
 knowledge-patterns/
 ```

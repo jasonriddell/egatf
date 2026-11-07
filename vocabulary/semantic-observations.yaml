@@ -39,7 +39,6 @@ observation_kinds:
       - tserver_logs
       - consensus_meta
       - tablet_report
-      - derived_evidence
     evidence_classes:
       - extracted_evidence
       - derived_evidence
@@ -62,7 +61,6 @@ observation_kinds:
       - tablet_report
       - consensus_meta
       - master_metadata
-      - derived_evidence
     evidence_classes:
       - derived_evidence
     timing_warning: >
@@ -74,7 +72,6 @@ observation_kinds:
     possible_sources:
       - tablet_report
       - master_metadata
-      - derived_evidence
     evidence_classes:
       - derived_evidence
 
@@ -83,7 +80,6 @@ observation_kinds:
     possible_sources:
       - tablet_report
       - master_metadata
-      - derived_evidence
     evidence_classes:
       - derived_evidence
 
@@ -139,3 +135,27 @@ observation_kinds:
       - known_issue_database
     evidence_classes:
       - knowledge_validation
+
+contradiction_kinds:
+  stable_leadership_during_impact:
+    description: Leadership was stable for the relevant tablets throughout the impact window.
+    absence_semantics: >
+      This is evidence of absence. It may only be asserted when log, metric or
+      metadata coverage of the impact window is adequate; otherwise record
+      metrics.coverage_gap and treat the result as unknown, not as stable.
+  timeout_precedes_leader_instability:
+    description: Client timeouts began before any observed leader instability.
+    absence_semantics: >
+      Requires adequate coverage of the period before the first timeout; absence of
+      earlier instability in a window with gaps does not establish this.
+  stronger_non_raft_explanation:
+    description: Another explanation (disk, CPU, network, client configuration) better accounts for the symptoms.
+    absence_semantics: not_applicable
+
+missing_evidence_kinds:
+  workload_to_tablet_mapping:
+    description: A mapping from the affected workload to the tablets it touches.
+  time_aligned_tablet_state:
+    description: Tablet state captured for the impact window rather than at collection time.
+  version_correct_reference_knowledge:
+    description: Documentation or source code validated against the collected product version.

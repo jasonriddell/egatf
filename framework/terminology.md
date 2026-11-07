@@ -1,7 +1,7 @@
 # EGATF Terminology
 
 **Document type:** Working glossary  
-**Status:** Draft v0.6  
+**Status:** Draft v0.8  
 **Repository path:** `framework/terminology.md`
 
 ---
@@ -347,3 +347,17 @@ A tablet report parser is a hybrid tool if it both structures the report and der
 - Use **judgment** for the current best human conclusion under uncertainty.
 
 Avoid treating the framework as a one-way pipeline. Each loop has a gate that can stop, rework, or return the investigation to an earlier stage.
+
+---
+
+## v0.8 Terms
+
+| Term | Definition |
+|---|---|
+| Hypothesis matrix | Evidence by hypothesis grid (supports, contradicts, neutral) used to challenge all candidate explanations together. |
+| Unexplained evidence | Evidence that supports no current hypothesis, recorded as a prompt for new hypotheses. |
+| Claim level | How strong a causal statement is: `consistent_with`, `supported_cause`, or `established_cause`. |
+| Mitigation | An action taken under uncertainty to reduce harm or discriminate between hypotheses; not a corrective Decision. |
+| Risk profile | Lite, Standard or High-assurance; sets the rigor required for an investigation. |
+| Challenger independence | Whether the challenge was run by someone or something independent of the generator of the hypothesis. |
+| Case record | A schema-validated file of typed nodes and edges that makes an investigation's evidence chain machine-checkable. |

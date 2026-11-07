@@ -365,6 +365,19 @@ The reported error appears in the logs, but only after the first tserver restart
 
 ---
 
+## Testing Preparation Quality
+
+Every later claim depends on Evidence Preparation, so preparation tools are tested like any other dependency:
+
+- Golden fixtures with known observations and checked-in expected output.
+- Sampling audits comparing random raw records against prepared output.
+- Drop accounting: every filter or consolidation reports what it removed.
+- AI-assisted extraction is treated as derived evidence of unknown reliability until a human has reviewed a sample and the miss rate is recorded.
+
+See `research/validation-design.md`.
+
+---
+
 ## Why This Matters for AI
 
 A safe AI-assisted diagnostic workflow should not always begin by sending raw bundles directly into AI.

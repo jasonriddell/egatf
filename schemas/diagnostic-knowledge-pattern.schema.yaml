@@ -1,6 +1,7 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 title: "EGATF Diagnostic Knowledge Pattern"
 type: object
+additionalProperties: false
 required:
   - schema_version
   - kind
@@ -36,6 +37,7 @@ properties:
   applies_to:
     type: object
     required: [product, components]
+    additionalProperties: false
     properties:
       product:
         type: string
@@ -45,6 +47,7 @@ properties:
           type: string
       versions:
         type: object
+        additionalProperties: false
         properties:
           min:
             type: [string, "null"]
@@ -60,6 +63,7 @@ properties:
               type: string
       deployment:
         type: object
+        additionalProperties: false
         properties:
           type:
             type: array
@@ -72,6 +76,7 @@ properties:
   summary:
     type: object
     required: [one_line, description]
+    additionalProperties: false
     properties:
       one_line:
         type: string
@@ -79,6 +84,7 @@ properties:
         type: string
   reported_context:
     type: object
+    additionalProperties: false
     properties:
       useful_clues:
         type: array
@@ -88,6 +94,7 @@ properties:
         type: string
   evidence_requirements:
     type: object
+    additionalProperties: false
     properties:
       required:
         type: array
@@ -102,6 +109,7 @@ properties:
     items:
       type: object
       required: [kind, meaning]
+      additionalProperties: false
       properties:
         kind:
           type: string
@@ -112,6 +120,7 @@ properties:
     items:
       type: object
       required: [kind, impact]
+      additionalProperties: false
       properties:
         kind:
           type: string
@@ -121,23 +130,28 @@ properties:
     type: array
     items:
       type: object
+      required: [subject, relation, object]
+      additionalProperties: false
       properties:
         subject:
           type: string
         relation:
           type: string
+          enum: [overlaps_or_precedes, must_be_time_compatible_with]
         object:
           type: string
         required:
           type: boolean
   knowledge_sources:
     type: object
+    additionalProperties: false
     properties:
       required_validation:
         type: array
         items:
           type: object
           required: [type, requirement]
+          additionalProperties: false
           properties:
             type:
               type: string
@@ -148,19 +162,38 @@ properties:
     items:
       type: string
   confidence_model:
+    description: >
+      Rule lists are evaluated in the order reject, low, high, medium; the first
+      matching level wins. 'requires' means all listed conditions must hold,
+      'allows' lists conditions that do not prevent Medium, and 'if' means any
+      listed condition triggers the level.
     type: object
+    additionalProperties: false
     properties:
       high:
         type: object
+        additionalProperties: false
+        properties:
+          requires: {type: array, items: {type: string}}
       medium:
         type: object
+        additionalProperties: false
+        properties:
+          allows: {type: array, items: {type: string}}
       low:
         type: object
+        additionalProperties: false
+        properties:
+          if: {type: array, items: {type: string}}
       reject:
         type: object
+        additionalProperties: false
+        properties:
+          if: {type: array, items: {type: string}}
   outputs:
     type: object
     required: [possible_insight, not_allowed_as_conclusion]
+    additionalProperties: false
     properties:
       possible_insight:
         type: string
@@ -170,6 +203,7 @@ $defs:
   evidenceRequirement:
     type: object
     required: [id, kind, evidence_classes, source_role, time_relation]
+    additionalProperties: false
     properties:
       id:
         type: string
@@ -192,6 +226,20 @@ $defs:
         items:
           type: string
       time_relation:
-        type: string
+        type: object
+        required: [relation]
+        additionalProperties: false
+        properties:
+          relation:
+            type: string
+            enum:
+              - during_impact_window
+              - before_or_during_impact_window
+              - overlaps_or_precedes
+              - collection_time_snapshot
+              - collection_time_snapshot_or_impact_window
+          ref:
+            type: string
+            description: Evidence requirement id this relation is relative to (required for overlaps_or_precedes).
       warning:
         type: string

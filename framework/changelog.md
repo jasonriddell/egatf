@@ -28,8 +28,55 @@ v0.4 - Collection context and evidence package manifests
 v0.5 - Three-loop operating model
 v0.6 - Judgment terminology update
 v0.7 - Diagnostic knowledge patterns and consistency fixes
+v0.8 - Review follow-ups: hypothesis matrix, causal claim standard, mitigation and stop rules, case-record schema
 v1.0 - First stable public framework
 ```
+
+---
+
+## v0.8 - Review Follow-ups
+
+**Date:** 2026-11-07  
+**Status:** Draft  
+**Stage:** Early research and validation
+
+### Summary
+
+Addresses findings from a structured review of the repository (reviewed with an independent Opus 5.5 advisor pass). No worked case has been run yet; v0.8 makes the framework testable rather than validated.
+
+### Added
+
+- `framework/mitigation-and-stop-rules.md`: mitigation under uncertainty, risk profiles (Lite, Standard, High-assurance), stop rules, Judgment ownership, Decision checklist. No fourth gate.
+- Hypothesis matrix, challenger independence, outcome confounding, Causal Claim Standard and confidence propagation in `framework/challenge-evaluation.md`.
+- `schemas/case-record.schema.yaml` and `schemas/examples/case-record.synthetic.yaml`: typed node IDs and typed edges so the evidence chain is machine-checkable.
+- `research/validation-design.md`: time-sliced replay study, measures, preparation quality tests, threats to validity.
+- `research/publication-readiness.md`: licence, employer IP and sensitivity decisions awaiting the author.
+- Semantic vocabulary sections `contradiction_kinds` (with absence semantics) and `missing_evidence_kinds`, and an optional per-observation `contract`.
+- Lint checks 9 and 10 (see `scripts/lint.py`).
+
+### Changed
+
+- Core principle (§4) no longer requires every piece of evidence to support an insight; unexplained evidence is recorded.
+- Cold analysis excludes Diagnostic Knowledge Patterns, and its Evidence Preparation must not be scoped by the reported context.
+- Gate 1 scope note: it tests evidence integrity and fitness; sufficiency to discriminate hypotheses is tested at Gate 2.
+- Numeric challenge scoring deprecated.
+- Pattern schema: `additionalProperties: false` throughout; `time_relation` is a structured object with an enumerated relation and a reference; confidence rule semantics and evaluation order documented.
+- Example pattern: evidence e2 no longer lists collection-time snapshot sources (`tablet_report`, `consensus_meta`), which contradicted its own time relation.
+- Vocabulary: `derived_evidence` removed from `possible_sources` (it is an evidence class, not a source).
+- Contradicting and missing evidence kinds in patterns are now checked strictly against the vocabulary.
+- Non-draft patterns must have version bounds and a review date.
+- Document version stamps updated for files changed in this release.
+
+### Not Changed
+
+- Gate names and count. The three gates remain canonical.
+- Gate 1 was not renamed; the scope note records the concern.
+- Numeric operational contracts for observations were not invented; the schema field exists and lint reports how many kinds lack one.
+
+### Open
+
+- First worked case (T-012).
+- Licence, employer IP and sensitivity decisions (`research/publication-readiness.md`).
 
 ---
 

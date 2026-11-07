@@ -31,7 +31,8 @@ The goal is to show why the answer should be trusted.
 | Date investigated | |
 | Analyst | |
 | Reviewers | |
-| EGATF version used | v0.6 |
+| EGATF version used | v0.8 |
+| Risk profile | Lite / Standard / High-assurance |
 | Status | Draft / In review / Complete |
 | Sensitivity | Public / Internal / Confidential / Sanitized |
 
@@ -601,6 +602,18 @@ For each candidate insight, answer:
 | What would we expect to see if this insight were true? | |
 | What would we expect to see if this insight were false? | |
 
+### Hypothesis matrix
+
+Rows are evidence IDs; columns are all hypotheses, including alternatives. Cells: supports / contradicts / neutral / not applicable. List unexplained evidence separately. See `framework/challenge-evaluation.md`.
+
+| Evidence | H-001 | H-002 | H-003 |
+|---|---|---|---|
+| | | | |
+
+Unexplained evidence:
+
+Challenger (person or model and role), and whether independent of the generator:
+
 ### Insight challenge results
 
 | Insight ID | Result | Reason | Confidence after challenge |
@@ -667,6 +680,10 @@ Describe the operational, customer, engineering, or communication risk if this j
 
 ---
 
+## Mitigation (if any, before Judgment)
+
+Complete when action was taken under Low or Medium confidence. Record: action, reversible?, blast radius, authorizer, time-box, confidence at time, diagnostic value. See `framework/mitigation-and-stop-rules.md`. A mitigation is not evidence that the diagnosis was right.
+
 ## 13. Decision
 
 Decision is the selected response based on the current best judgment.
@@ -730,6 +747,10 @@ It answers:
 | Measurement | Before | After | Evidence | Notes |
 |---|---|---|---|---|
 | | | | | |
+
+### Confounders
+
+Other changes in the same period, and whether competing hypotheses predict the same result. An outcome all hypotheses predict is inconclusive.
 
 ### Was the judgment supported?
 

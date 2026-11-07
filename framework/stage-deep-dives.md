@@ -1,7 +1,7 @@
 # EGATF Stage Deep Dives
 
 **Document type:** Stage detail  
-**Status:** Draft v0.6  
+**Status:** Draft v0.8  
 **Repository path:** `framework/stage-deep-dives.md`
 
 ---
@@ -384,11 +384,14 @@ Gate:
 
 Steps:
 
-1. List options.
-2. Evaluate risk.
+1. List options, including doing nothing and any mitigation already in place.
+2. Evaluate risk: reversibility, blast radius, rollback condition.
 3. Select action or defer.
-4. Identify owner.
-5. Record rationale.
+4. Identify owner and authorizer.
+5. State the expected outcome in a form that could contradict the Judgment.
+6. Record rationale.
+
+See `framework/mitigation-and-stop-rules.md` for mitigation under uncertainty.
 
 Output:
 

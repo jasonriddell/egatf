@@ -1,6 +1,7 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 title: "EGATF Semantic Observation Vocabulary"
 type: object
+additionalProperties: false
 required:
   - schema_version
   - kind
@@ -23,7 +24,20 @@ properties:
         - description
         - possible_sources
         - evidence_classes
+      additionalProperties: false
       properties:
+        contract:
+          type: object
+          description: >
+            Operational meaning of the observation, so two adapters cannot emit
+            the same kind with different semantics. Not yet populated for the v0.1 kinds.
+          additionalProperties: false
+          properties:
+            definition: {type: string}
+            baseline: {type: string}
+            threshold: {type: string}
+            unit: {type: string}
+            minimum_coverage: {type: string}
         description:
           type: string
         possible_sources:
@@ -44,3 +58,22 @@ properties:
               - knowledge_validation
         timing_warning:
           type: string
+  contradiction_kinds:
+    type: object
+    additionalProperties:
+      type: object
+      required: [description, absence_semantics]
+      additionalProperties: false
+      properties:
+        description: {type: string}
+        absence_semantics:
+          type: string
+          description: Coverage required before this can be asserted, or 'not_applicable'.
+  missing_evidence_kinds:
+    type: object
+    additionalProperties:
+      type: object
+      required: [description]
+      additionalProperties: false
+      properties:
+        description: {type: string}

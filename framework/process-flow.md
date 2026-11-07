@@ -1,7 +1,7 @@
 # EGATF Process Flow
 
 **Document type:** Process overview  
-**Status:** Draft v0.7  
+**Status:** Draft v0.8  
 **Repository path:** `framework/process-flow.md`
 
 ---
@@ -157,7 +157,7 @@ Cold and guided analysis is a Reasoning Loop technique, not a gate. EGATF has ex
 
 Where anchoring risk matters:
 
-- Run a cold pass without the reported cause.
+- Run a cold pass without the reported cause and without Diagnostic Knowledge Patterns.
 - Run a guided pass with reported context as guidance, not proof.
 - Compare outputs before accepting insights.
 
