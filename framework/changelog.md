@@ -71,10 +71,12 @@ Addresses findings from a structured review of the repository (reviewed with an 
 
 - Gate names and count. The three gates remain canonical.
 - Gate 1 was not renamed; the scope note records the concern.
-- Numeric operational contracts for observations were not invented; the schema field exists and lint reports how many kinds lack one.
+
+- Operational contracts (definition, baseline, threshold, unit, minimum coverage) for all 12 observation kinds, marked `provisional`. The thresholds are illustrative starting points chosen by the author, not product-validated values.
 
 ### Open
 
+- Validate or replace the provisional thresholds in the first worked case.
 - First worked case (T-012).
 - Licence, employer IP and sensitivity decisions (`research/publication-readiness.md`).
 

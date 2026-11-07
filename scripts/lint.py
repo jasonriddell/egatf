@@ -189,6 +189,11 @@ def main():
         if no_contract:
             warn(f"{len(no_contract)} of {len(known_kinds)} observation kinds have no operational contract "
                  f"(definition, baseline, threshold, coverage): add one when a case needs the kind")
+        provisional = [k for k, v in vocab.get("observation_kinds", {}).items()
+                       if (v.get("contract") or {}).get("status") == "provisional"]
+        if provisional:
+            warn(f"{len(provisional)} of {len(known_kinds)} observation contracts are provisional "
+                 f"(illustrative thresholds, not validated against a case)")
         # 5. vocabulary evidence classes
         for kind, spec in vocab.get("observation_kinds", {}).items():
             for ec in spec.get("evidence_classes", []):

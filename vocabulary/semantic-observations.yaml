@@ -2,6 +2,12 @@ schema_version: "0.1"
 kind: semantic_observation_vocabulary
 status: draft
 
+contract_note: >
+  All contracts are provisional. The thresholds are illustrative starting points chosen
+  by the author of this repository, not product-validated values and not
+  recommendations for any particular deployment. Replace them with values justified by a
+  worked case, and mark them validated.
+
 purpose: >
   Stable semantic observation names used by EGATF Diagnostic Knowledge Patterns.
   These names should remain stable even when support bundle formats, log formats,
@@ -10,6 +16,13 @@ purpose: >
 observation_kinds:
   client.timeout_increase:
     description: Client-visible timeout rate or timeout frequency increased.
+    contract:
+      status: provisional
+      definition: "Client-visible timeouts per minute, as a share of requests, rise above the comparison baseline."
+      baseline: "Median timeout share over the 24 hours before the impact window, or the same hours on the previous 7 days if available."
+      threshold: "At least 2x baseline and at least 1% of requests, sustained for 5 minutes or more, with at least 100 requests per minute."
+      unit: "timeouts / requests, per minute"
+      minimum_coverage: "Request counts available for at least 80% of minutes in the impact window and in the baseline period."
     possible_sources:
       - client_logs
       - ysql_logs
@@ -22,6 +35,13 @@ observation_kinds:
 
   client.latency_increase:
     description: Client-visible latency increased above baseline or expected range.
+    contract:
+      status: provisional
+      definition: "Client-visible latency at the chosen percentile rises above the comparison baseline."
+      baseline: "Same percentile over the 24 hours before the impact window."
+      threshold: "p99 at least 2x baseline and at least 100 ms above it, sustained for 5 minutes or more."
+      unit: "milliseconds, p99"
+      minimum_coverage: "Latency samples for at least 80% of minutes in the window and baseline."
     possible_sources:
       - client_logs
       - ysql_logs
@@ -34,6 +54,13 @@ observation_kinds:
 
   raft.leader_instability:
     description: Raft leadership changed, was unavailable, or was repeatedly contested for relevant tablets or groups.
+    contract:
+      status: provisional
+      definition: "A raft group changes leader repeatedly, or is without a leader, within a short interval."
+      baseline: "Leader changes per tablet per hour in the 24 hours before the impact window."
+      threshold: "At least 3 leader changes for the same tablet within 10 minutes, or at least 10 tablets changing leader within 1 minute, or any tablet without a leader for 30 seconds or more."
+      unit: "leader changes per tablet per 10 minutes"
+      minimum_coverage: "Logs for every node hosting the affected tablets for the whole window; a node with missing logs makes the result partial."
     possible_sources:
       - master_logs
       - tserver_logs
@@ -46,6 +73,13 @@ observation_kinds:
 
   raft.no_leader_observed:
     description: A tablet or raft group was observed without a leader.
+    contract:
+      status: provisional
+      definition: "A tablet or raft group is observed with no leader."
+      baseline: "Expected: zero tablets without a leader outside planned restarts."
+      threshold: "Any tablet without a leader for 10 seconds or more at a point in time covered by the source."
+      unit: "seconds without a leader"
+      minimum_coverage: "For historical claims the source must cover the window; a collection-time snapshot supports only the state at collection."
     possible_sources:
       - master_logs
       - tserver_logs
@@ -57,6 +91,13 @@ observation_kinds:
 
   tablet.leaderless:
     description: A tablet is computed or observed to have no current leader.
+    contract:
+      status: provisional
+      definition: "A tablet is computed or observed to have no current leader in the source's snapshot."
+      baseline: "Expected: zero leaderless tablets."
+      threshold: "At least one tablet with no leader in the source at the time it describes."
+      unit: "count of tablets"
+      minimum_coverage: "The source states the time it describes. A collection-time snapshot describes collection time only."
     possible_sources:
       - tablet_report
       - consensus_meta
@@ -69,6 +110,13 @@ observation_kinds:
 
   tablet.under_replicated:
     description: A tablet has fewer live or valid replicas than expected for the replication factor.
+    contract:
+      status: provisional
+      definition: "A tablet has fewer live replicas than the configured replication factor."
+      baseline: "Expected: live replicas equal to replication factor."
+      threshold: "Live replicas below replication factor for at least one tablet, for 60 seconds or more where time-series data exist."
+      unit: "count of tablets, and replicas missing"
+      minimum_coverage: "Replication factor is known for the affected tables and the source states the time it describes."
     possible_sources:
       - tablet_report
       - master_metadata
@@ -77,6 +125,13 @@ observation_kinds:
 
   tablet.over_replicated:
     description: A tablet has more replicas than expected for the replication factor.
+    contract:
+      status: provisional
+      definition: "A tablet has more replicas than the configured replication factor."
+      baseline: "Expected: replicas equal to replication factor, apart from short re-replication periods."
+      threshold: "Replicas above replication factor for at least one tablet for 5 minutes or more."
+      unit: "count of tablets, and extra replicas"
+      minimum_coverage: "Replication factor is known and the source states the time it describes."
     possible_sources:
       - tablet_report
       - master_metadata
@@ -85,6 +140,13 @@ observation_kinds:
 
   node.disk_latency_increase:
     description: Disk latency increased on one or more nodes.
+    contract:
+      status: provisional
+      definition: "Disk read or write latency on a node rises above its own baseline."
+      baseline: "Median latency for the same device over the 24 hours before the impact window."
+      threshold: "Average wait at least 3x baseline and at least 20 ms, sustained for 5 minutes or more."
+      unit: "milliseconds, average wait per I/O"
+      minimum_coverage: "Samples at 1-minute resolution or finer for at least 80% of the window, for each node considered."
     possible_sources:
       - node_metrics
       - prometheus_metrics
@@ -96,6 +158,13 @@ observation_kinds:
 
   node.cpu_saturation:
     description: CPU usage was saturated or near saturation on one or more nodes.
+    contract:
+      status: provisional
+      definition: "CPU use on a node is at or near full capacity."
+      baseline: "Typical busy percentage for the node over the 24 hours before the impact window."
+      threshold: "At least 90% busy (user plus system) across all cores, sustained for 5 minutes or more; or run queue above 2x core count for the same period."
+      unit: "percent busy"
+      minimum_coverage: "Samples at 1-minute resolution or finer for at least 80% of the window, for each node considered."
     possible_sources:
       - node_metrics
       - prometheus_metrics
@@ -107,6 +176,13 @@ observation_kinds:
 
   process.restart_observed:
     description: A process restart was observed.
+    contract:
+      status: provisional
+      definition: "A service process stopped and started again."
+      baseline: "Expected: no unplanned restarts."
+      threshold: "Any process start event whose previous instance did not stop through a recorded, planned shutdown."
+      unit: "count of restarts"
+      minimum_coverage: "Lifecycle events or uptime data for every node in the window; absence of a restart event is meaningful only with such coverage."
     possible_sources:
       - service_logs
       - system_logs
@@ -117,6 +193,13 @@ observation_kinds:
 
   metrics.coverage_gap:
     description: Metrics expected for an investigation are absent, incomplete, low-resolution, or outside the required time window.
+    contract:
+      status: provisional
+      definition: "Metrics needed for the question are absent, sparse, or outside the required window."
+      baseline: "Expected: samples at the stated scrape interval for the whole window."
+      threshold: "Fewer than 80% of expected samples in the window for a required metric, or a gap longer than 5 minutes inside the window."
+      unit: "percent of expected samples"
+      minimum_coverage: "Collection context states which metrics were requested and for which window."
     possible_sources:
       - manifest
       - collection_context
@@ -128,6 +211,13 @@ observation_kinds:
 
   knowledge.version_mismatch:
     description: A reference knowledge source does not apply cleanly to the collected product version or deployment context.
+    contract:
+      status: provisional
+      definition: "A knowledge source does not apply to the collected product version or deployment."
+      baseline: "Expected: the source's stated applicable versions include the collected version."
+      threshold: "Collected version falls outside the source's stated range, or the source states no version at all."
+      unit: "yes, no, or unknown"
+      minimum_coverage: "The collected product version is known from collection context."
     possible_sources:
       - documentation_metadata
       - source_code_version
