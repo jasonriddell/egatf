@@ -77,7 +77,7 @@ def load_yaml(path):
 def check_schema_keywords(path):
     text = path.read_text()
     for bad in ("$title:", "$type:"):
-        if re.search(rf"^\s*\{bad[1:]}", text, re.M) and bad in text:
+        if re.search(rf"^\s*{re.escape(bad)}", text, re.M):
             err(f"{path}: uses non-standard keyword {bad} (use {bad[1:]})")
 
 
